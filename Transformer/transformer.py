@@ -73,7 +73,8 @@ class Transformer(nn.Module):
         B, L = token_ids.shape
 
         if L > self.max_tokens:
-            raise ValueError(f"Sequence length {L} exceeds max_tokens {self.max_tokens}")
+            raise ValueError(f"Sequence length {L} exceeds max_tokens {self.max_tokens}, so truncating the tokens")
+            
 
         tok_emb = self.token_embedding[token_ids] 
 
