@@ -9,6 +9,7 @@ from torch.utils.data import DataLoader,IterableDataset
 ## customs libs
 import Tokenizer.tokenizer as tk
 from Transformer.transformer import Transformer
+from Transformer.checkpoint import save_checkpoint, find_latest_checkpoint
 
 # device agnostic
 
@@ -116,6 +117,22 @@ loader = DataLoader(
 # Optimizer
 optimizer = torch.optim.Adam(en_hi.parameters(),lr = 1e-3,)
 
+
+runtime_dir = "./model"
+drive_dir = "/content/drive/MyDrive/model"
+
+latest = find_latest_checkpoint(drive_dir)
+if latest:
+    print("Loading from checkpoint:", latest)
+    en_hi.load(latest, map_location="cuda")
+
+    global_step = int(latest.split("_step_")[1].split("_")[0])
+else:
+    print("Starting fresh")
+    global_step = 0
+
+save_every = 2000  # steps
+
 # Training Loop
 losses = []
 print(f"Started Trainnig Loop with epoch: {epochs} and batch size: {batch_size}\n")
@@ -139,6 +156,11 @@ for epoch in range(epochs):
         loss.backward()
         
         optimizer.step()
+        
+        global_step += 1
+
+        if global_step % save_every == 0:
+            save_checkpoint(en_hi, runtime_dir, drive_dir, global_step)
     
     loss_batch /= batch_size
     

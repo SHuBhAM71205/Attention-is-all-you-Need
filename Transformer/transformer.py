@@ -7,6 +7,10 @@ from .encoder import Encoder
 
 from .decoder import Decoder 
 
+import os
+import time
+from datetime import datetime
+import shutil
 
 class Transformer(nn.Module):
     def __init__(
@@ -20,6 +24,8 @@ class Transformer(nn.Module):
         max_tokens      =512,
         PATH            = ".",
         load_from_saves =True,
+        drive_path = "",
+        
         device = "cpu"
         
     ):
@@ -29,6 +35,7 @@ class Transformer(nn.Module):
         super().__init__()
         
         self.PATH = PATH
+        self.drive_path = drive_path
         self.device = device
         try:
             self.load()
@@ -175,8 +182,16 @@ class Transformer(nn.Module):
         logits = self.decode(tgt_input, enc_out, src_pad_mask)
         return logits, tgt_target
     
-    def save(self):
-        torch.save(self.state_dict(),f"{self.PATH}/{self.__class__.__name__}")
+    def save(self, path = None):
+        if path is None:
+            torch.save(self.state_dict(),f"{self.PATH}/{self.__class__.__name__}")
+        else:   
+            torch.save(self.state_dict(), path)
         
-    def load(self):
-        self.load_state_dict(torch.load(f"{self.PATH}/{self.__class__.__name__}"))
+
+    def load(self, path=None, map_location=None):
+        
+        if path is None:
+            self.load_state_dict(torch.load(f"{self.PATH}/{self.__class__.__name__}"))
+        else:
+            self.load_state_dict(torch.load(path, map_location=map_location))
