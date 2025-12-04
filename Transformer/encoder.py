@@ -15,19 +15,25 @@ class EncoderLayer(nn.Module):
 
         self.ffn = FFN(embedding_dims, d_ff)
         self.addnorm2 = AddNorm(embedding_dims)
+        self.drop = Dropout(0.1)
 
     def forward(self, x, src_pad_mask=None):
+        
+        prob = torch.tensor([0.1,0.9])
+        
+        mode = torch.is_inference_mode_enabled()
         
         attn_mask = None
         
         if src_pad_mask is not None:
             attn_mask = src_pad_mask.unsqueeze(1).unsqueeze(2)
             
-        att_out = self.self_attn(q=x, kv=x, attn_mask=attn_mask)
+        att_out = self.drop(self.self_attn(q=x, kv=x, attn_mask=attn_mask))
+        
         x = self.addnorm1(x + att_out)
 
+        ffn_out = self.drop(self.ffn(x))
         
-        ffn_out = self.ffn(x)
         x = self.addnorm2(x + ffn_out)
 
         return x
@@ -48,4 +54,22 @@ class Encoder(nn.Module):
         
         for layer in self.layers:
             x = layer(x, src_pad_mask=src_pad_mask)
+        return x
+
+
+class Dropout(nn.Module):
+    
+    def __init__(self,dropout_rate=0.1):
+        super().__init__()
+        self.droupout_rate = dropout_rate
+        
+    def forward(self,x: torch.Tensor):
+        mode = torch.is_inference_mode_enabled()
+        
+        if mode is not True:
+            
+            mask = torch.bernoulli(torch.full(size = x.shape , fill_value= 1-self.droupout_rate , device = 'cuda' if torch.cuda.is_available() else 'cpu'))
+            
+            return x * mask / (1 - self.droupout_rate)
+        
         return x
