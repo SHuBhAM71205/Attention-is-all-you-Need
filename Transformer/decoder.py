@@ -79,7 +79,7 @@ class Dropout(nn.Module):
         self.droupout_rate = dropout_rate
         
     def forward(self,x: torch.Tensor):
-        mode = torch.is_inference_mode_enabled()
+        mode = torch.is_inference_mode_enabled() or not self.training
         
         if mode is not True:
             
