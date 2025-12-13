@@ -24,8 +24,8 @@ class Attention(nn.Module):
             raise ValueError("Invalid mode: should be 'multihead' or 'masked'")
 
         self.q = nn.Parameter(torch.randn((self.heads, embedding_dims, O_dim)))
-        self.k = nn.Parameter(torch.randn((self.heads, embedding_dims, O_dim)))
-        self.v = nn.Parameter(torch.randn((self.heads, embedding_dims, O_dim)))
+        self.k = nn.Parameter(torch.randn((embedding_dims, O_dim))) #c1
+        self.v = nn.Parameter(torch.randn((embedding_dims, O_dim))) #c2
 
         self.Wo = nn.Parameter(torch.randn((O_dim * self.heads, embedding_dims)))
 
@@ -44,11 +44,12 @@ class Attention(nn.Module):
         _, S_k, _ = kv.shape
 
         q = q.unsqueeze(1)
-        kv = kv.unsqueeze(1)
 
         Q = q @ self.q
         K = kv @ self.k
+        K = K.unsqueeze(1)
         V = kv @ self.v
+        V = V.unsqueeze(1)
         scores = Q @ K.transpose(-1, -2) / math.sqrt(self.O_dim)
 
         if self.mode == "masked":
