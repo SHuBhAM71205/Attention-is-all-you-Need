@@ -28,13 +28,16 @@ class EncoderLayer(nn.Module):
         if src_pad_mask is not None:
             attn_mask = src_pad_mask.unsqueeze(1).unsqueeze(2)
             
-        att_out = self.drop(self.self_attn(q=x, kv=x, attn_mask=attn_mask))
+        x_norm = self.addnorm1(x)
         
-        x = self.addnorm1(x + att_out)
+        att_out = self.drop(self.self_attn(q=x_norm, kv=x_norm, attn_mask=attn_mask))
+        
+        x = x + att_out
+        
+        x_norm = self.addnorm2(x)
+        ffn_out = self.drop(self.ffn(x_norm))
 
-        ffn_out = self.drop(self.ffn(x))
-        
-        x = self.addnorm2(x + ffn_out)
+        x = x + ffn_out
 
         return x
     
@@ -49,12 +52,14 @@ class Encoder(nn.Module):
             EncoderLayer(embedding_dims, d_ff, n_heads)
             for _ in range(num_layers)
         )
+        
+        self.final_norm = nn.LayerNorm(embedding_dims)
 
     def forward(self, x, src_pad_mask=None):
         
         for layer in self.layers:
             x = layer(x, src_pad_mask=src_pad_mask)
-        return x
+        return self.final_norm(x)
 
 
 class Dropout(nn.Module):

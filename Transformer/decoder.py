@@ -40,18 +40,23 @@ class  DecoderLayer(nn.Module):
         if tgt_pad_mask is not None:
             self_attn_mask = tgt_pad_mask.unsqueeze(1).unsqueeze(2)  # (B,1,1,T)
 
-        self_attn_out = self.drop(self.self_attn(q=x, kv=x, attn_mask=self_attn_mask))
-        x = self.addnorm1(x + self_attn_out)
+        x_norm = self.addnorm1(x)
+        self_attn_out = self.drop(self.self_attn(q=x_norm, kv=x_norm, attn_mask=self_attn_mask))
+        x = x + self_attn_out
 
         cross_attn_mask = None
         if src_pad_mask is not None:
             cross_attn_mask = src_pad_mask.unsqueeze(1).unsqueeze(2)  # (B,1,1,S)
 
-        cross_attn_out = self.drop(self.cross_attn(q=x, kv=enc_out, attn_mask=cross_attn_mask))
-        x = self.addnorm2(x + cross_attn_out)
+        
+        x_norm = self.addnorm2(x)
+        cross_attn_out = self.drop(self.cross_attn(q=x_norm, kv=enc_out, attn_mask=cross_attn_mask))
+        x = x + cross_attn_out
 
-        ffn_out = self.drop(self.ffn(x))
-        x = self.addnorm3(x + ffn_out)
+        
+        x_norm = self.addnorm3(x)
+        ffn_out = self.drop(self.ffn(x_norm))
+        x = x + ffn_out
 
         return x
 
@@ -66,15 +71,17 @@ class Decoder(nn.Module):
             for _ in range(num_layers)
         )
 
+        self.final_norm = nn.LayerNorm(embedding_dims)
+
     def forward(self, x, enc_out, src_pad_mask=None, tgt_pad_mask=None):
         for layer in self.layers:
             x = layer(x, enc_out, src_pad_mask=src_pad_mask, tgt_pad_mask=tgt_pad_mask)
-        return x
+        return self.final_norm(x)
 
 
 class Dropout(nn.Module):
     
-    def __init__(self,dropout_rate=0.1):
+    def __init__(self,dropout_rate=0.2):
         super().__init__()
         self.droupout_rate = dropout_rate
         
