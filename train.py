@@ -63,7 +63,6 @@ loader = DataLoader(
 # Optimizer
 optimizer = torch.optim.Adam(en_hi.parameters(), lr=1e-3,)
 
-
 if __name__ =="__main__":
     
     latest = find_latest_checkpoint(drive_dir)

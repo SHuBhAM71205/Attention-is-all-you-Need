@@ -8,13 +8,14 @@ from Transformer import transformer,checkpoint
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-embedding_dims = 256
-d_ff = 1024
-n_heads = 6
-n_layers = 4
+embedding_dims = 128
+d_ff = 100
+n_heads = 4
+n_layers = 2
 batch_size = 64
 epochs = 5
 label_smoothing = 0.1
+
 # test data path
 dev_en_path = "./Data/dev_test/dev.en"
 dev_hi_path = "./Data/dev_test/dev.hi"
@@ -34,7 +35,7 @@ loader = DataLoader(
 )
 
 en_hi = transformer.Transformer(
-    tokenizer,
+    tknizer,
     embedding_dims=embedding_dims,
     d_ff=d_ff,
     n_heads=n_heads,
