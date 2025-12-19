@@ -19,10 +19,14 @@ print(f"Working on device {device}")
 
 # paths
 
+mode = str(input("Enter `colab` if working with the google colab \nEnter `local` if running locally \n"))
+
+
 train_en_path = "./Data/parallel-n/en-hi.en"
 train_hi_path = "./Data/parallel-n/en-hi.hi"
 
-runtime_dir = "/model"
+
+runtime_dir = "/model" if mode =="colab" else None
 drive_dir = "./saves"
 
 # constants
@@ -116,7 +120,7 @@ if __name__ =="__main__":
 
             if global_step % save_every == 0:
                 
-                save_checkpoint(en_hi, runtime_dir, drive_dir, global_step)
+                save_checkpoint(en_hi, runtime_dir, drive_dir, global_step,mode=mode)
                 print(loss_batch / cnt)
 
         loss_batch /= batch_size
@@ -126,6 +130,6 @@ if __name__ =="__main__":
         print(f"Epoch {epoch} ; loss {loss_batch}")
     
     
-    save_checkpoint(en_hi, runtime_dir, drive_dir, global_step)
+    save_checkpoint(en_hi, runtime_dir, drive_dir, global_step,mode = mode)
 
 
