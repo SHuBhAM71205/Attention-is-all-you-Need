@@ -67,9 +67,13 @@ class Tokenizer:
     
 if __name__ == "__main__":
     # for checking purpose
-    token = Tokenizer(model_path="..", data_path="../../Data/dev_test/dev.all")
+    token = Tokenizer(model_path="./", data_path="./Data/dev_test/dev.all")
 
+    
     sample_sentence = "पुलिस की प्रारंभिक जांच में सामने आया है कि कोमल आर्थिक तंगी से परेशान थी व इसी वजह से उसने यह कदम उठाया।"
 
-    print(token.encode(sample_sentence, encode_type='tokens'))
-    print(token.encode(sample_sentence, encode_type='pieces'))
+    x = token.encode(sample_sentence, encode_type='tokens')
+    
+    y = token.decode(x)
+    
+    # print(x,y) 

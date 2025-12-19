@@ -22,8 +22,8 @@ print(f"Working on device {device}")
 train_en_path = "./Data/parallel-n/en-hi.en"
 train_hi_path = "./Data/parallel-n/en-hi.hi"
 
-runtime_dir = "./model"
-drive_dir = "/content/drive/MyDrive/model"
+runtime_dir = "/model"
+drive_dir = "./saves"
 
 # constants
 
@@ -31,7 +31,7 @@ embedding_dims = 128
 d_ff = 100
 n_heads = 4
 n_layers = 2
-batch_size = 64
+batch_size = 128
 epochs = 5
 label_smoothing = 0.1
 
@@ -65,6 +65,7 @@ optimizer = torch.optim.Adam(en_hi.parameters(), lr=1e-3,)
 
 if __name__ =="__main__":
     
+
     latest = find_latest_checkpoint(drive_dir)
     if latest:
         print("Loading from checkpoint:", latest)
@@ -82,10 +83,11 @@ if __name__ =="__main__":
     print(
         f"Started Trainnig Loop with epoch: {epochs} and batch size: {batch_size}\n")
     
+
     en_hi.train()
     for epoch in range(epochs):
         loss_batch = 0
-
+        cnt = 0
         for src_ids, tgt_ids in loader:
             src_ids = src_ids.to(device)
             tgt_ids = tgt_ids.to(device)
@@ -110,17 +112,20 @@ if __name__ =="__main__":
             optimizer.step()
 
             global_step += 1
+            cnt+=1
 
             if global_step % save_every == 0:
-                save_checkpoint(en_hi, runtime_dir, drive_dir, global_step)
                 
+                save_checkpoint(en_hi, runtime_dir, drive_dir, global_step)
+                print(loss_batch / cnt)
 
         loss_batch /= batch_size
 
         losses.append(loss_batch)
 
         print(f"Epoch {epoch} ; loss {loss_batch}")
-
-    en_hi.save()
+    
+    
+    save_checkpoint(en_hi, runtime_dir, drive_dir, global_step)
 
 

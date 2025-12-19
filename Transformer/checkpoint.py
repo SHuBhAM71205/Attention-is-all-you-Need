@@ -24,7 +24,7 @@ def save_checkpoint(model, runtime_dir, drive_dir, step):
     drive_path   = os.path.join(drive_dir, fname)
 
     model.save(runtime_path)
-    shutil.copy(runtime_path, drive_path)
+    # shutil.copy(runtime_path, drive_path)
 
     print(f"[Checkpoint] step={step}")
     print(f" saved → {runtime_path}")

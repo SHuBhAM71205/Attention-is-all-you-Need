@@ -37,10 +37,6 @@ class Transformer(nn.Module):
         self.PATH = PATH
         self.drive_path = drive_path
         self.device = device
-        try:
-            self.load()
-        except Exception as  e:
-            pass
         
         self.tokenizer = tokenizer
         self.embedding_dims = embedding_dims
@@ -69,7 +65,11 @@ class Transformer(nn.Module):
 
         self.W_out = nn.Parameter(torch.randn(size = (embedding_dims, self.vocab_size)) / math.sqrt(embedding_dims))
         self.b_out = nn.Parameter(torch.zeros(self.vocab_size))
-
+        try:
+            self.load()
+        except Exception as  e:
+            pass
+        
     
     def embed(self, token_ids: torch.Tensor) -> torch.Tensor:
         """

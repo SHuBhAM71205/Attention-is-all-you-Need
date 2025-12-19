@@ -12,7 +12,7 @@ embedding_dims = 128
 d_ff = 100
 n_heads = 4
 n_layers = 2
-batch_size = 64
+batch_size = 128
 epochs = 5
 label_smoothing = 0.1
 
@@ -46,6 +46,9 @@ en_hi = transformer.Transformer(
     device=device
 ).to(device)
 
+total_params = sum(p.numel() for p in en_hi.parameters())
+
+print(f"Total Model Parameters: {total_params:,}")
 pnt = checkpoint.find_latest_checkpoint("./saves")
 
 if pnt is None:
