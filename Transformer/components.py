@@ -24,14 +24,16 @@ class Attention(nn.Module):
             raise ValueError("Invalid mode: should be 'multihead' or 'masked'")
 
         self.q = nn.Parameter(torch.randn((self.heads, embedding_dims, O_dim)))
-        self.k = nn.Parameter(torch.randn((embedding_dims, O_dim))) #c1
-        self.v = nn.Parameter(torch.randn((embedding_dims, O_dim))) #c2
+        self.k = nn.Parameter(torch.randn((embedding_dims, O_dim))) 
+        self.v = nn.Parameter(torch.randn((embedding_dims, O_dim))) 
 
         self.Wo = nn.Parameter(torch.randn((O_dim * self.heads, embedding_dims)))
 
+        
+        
     def forward(self, q, kv=None ,attn_mask=None):
         """
-        q  shape : (B, S_q, E)
+        q  shape : (B, S_q, E) contain the current and the previous tokens
         kv shape : (B, S_k, E) or None
 
         If kv is None → self-attention: kv = q
@@ -43,25 +45,29 @@ class Attention(nn.Module):
         B, S_q, E = q.shape
         _, S_k, _ = kv.shape
 
-        q = q.unsqueeze(1)
-
-        Q = q @ self.q
-        K = kv @ self.k
-        K = K.unsqueeze(1)
-        V = kv @ self.v
-        V = V.unsqueeze(1)
-        scores = Q @ K.transpose(-1, -2) / math.sqrt(self.O_dim)
+        q = q.unsqueeze(1) #(B,1,S_q,E)
+        
+        Q = q @ self.q #(B,n_head,S_q or 1,O_dim) # multiple queries is generated
+        
+        K = kv @ self.k #(B,S_q,O_dim)
+        
+        K = K.unsqueeze(1) #(B,1,S_q,O_dim)
+        
+        V = kv @ self.v #(B,S_q,O_dim)
+        
+        V = V.unsqueeze(1) #(B,1,S_q,O_dim)
+        
+        scores = Q @ K.transpose(-1, -2) / math.sqrt(self.O_dim) #(B,n_head,S_q,S_q)
 
         if self.mode == "masked":
-
             mask = torch.triu(torch.ones(S_q, S_k, device=scores.device), diagonal=1).bool()
             scores = scores.masked_fill(mask, float('-inf'))
         
         if attn_mask is not None:
             scores = scores.masked_fill(attn_mask, float('-inf'))
             
-        probs = torch.softmax(scores, dim=-1)
-        context = probs @ V
+        probs = torch.softmax(scores, dim=-1) #(B,n_head,S_q,S_q)
+        context = probs @ V #(B,n_head,S_q,o_dims)
         context = context.permute(0, 2, 1, 3).reshape(B, S_q, self.O_dim * self.heads)
 
         out = context @ self.Wo

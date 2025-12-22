@@ -20,7 +20,10 @@ label_smoothing = 0.1
 dev_en_path = "./Data/dev_test/dev.en"
 dev_hi_path = "./Data/dev_test/dev.hi"
 
-runtime_dir = "/model"
+
+mode = "local"
+
+runtime_dir = "/model" if mode =="colab" else None
 drive_dir = "./saves"
 
 tknizer = tokenizer.Tokenizer(model_path=".",data_path="./Data/parallel-n/en-hi.all")

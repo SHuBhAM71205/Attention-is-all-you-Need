@@ -86,7 +86,6 @@ if __name__ =="__main__":
     losses = []
     print(
         f"Started Trainnig Loop with epoch: {epochs} and batch size: {batch_size}\n")
-    
 
     en_hi.train()
     for epoch in range(epochs):

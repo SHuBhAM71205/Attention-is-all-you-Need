@@ -44,7 +44,10 @@ def find_latest_checkpoint(path):
 
     files = [f for f in os.listdir(path) if f.endswith(".pt")]
     if not files:
+        print("No checkpoint found")
         return None
 
     files.sort()
+    
+    print(f"Loading the model: {files[-1]}")
     return os.path.join(path, files[-1])
