@@ -1,0 +1,329 @@
+Working on device cuda
+SentencePiece model loaded successfully!
+No checkpoint found
+Starting fresh
+Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[Checkpoint] step=2000
+ saved → /model/Transformer_step_2000_2025-12-24_03-58-27.pt
+ copied -> ./saves/Transformer_step_2000_2025-12-24_03-58-27.pt
+8.100991156816482
+[Checkpoint] step=4000
+ saved → /model/Transformer_step_4000_2025-12-24_03-59-22.pt
+ copied -> ./saves/Transformer_step_4000_2025-12-24_03-59-22.pt
+7.434458324193955
+[Checkpoint] step=6000
+ saved → /model/Transformer_step_6000_2025-12-24_04-00-18.pt
+ copied -> ./saves/Transformer_step_6000_2025-12-24_04-00-18.pt
+7.263510178724925
+[Checkpoint] step=8000
+ saved → /model/Transformer_step_8000_2025-12-24_04-01-22.pt
+ copied -> ./saves/Transformer_step_8000_2025-12-24_04-01-22.pt
+7.15856164714694
+[Checkpoint] step=10000
+ saved → /model/Transformer_step_10000_2025-12-24_04-02-59.pt
+ copied -> ./saves/Transformer_step_10000_2025-12-24_04-02-59.pt
+7.110222580742836
+[Checkpoint] step=12000
+ saved → /model/Transformer_step_12000_2025-12-24_04-04-37.pt
+ copied -> ./saves/Transformer_step_12000_2025-12-24_04-04-37.pt
+7.051675187687079
+[Checkpoint] step=14000
+ saved → /model/Transformer_step_14000_2025-12-24_04-06-10.pt
+ copied -> ./saves/Transformer_step_14000_2025-12-24_04-06-10.pt
+7.012873510752406
+[Checkpoint] step=16000
+ saved → /model/Transformer_step_16000_2025-12-24_04-07-44.pt
+ copied -> ./saves/Transformer_step_16000_2025-12-24_04-07-44.pt
+7.0431276056021455
+[Checkpoint] step=18000
+ saved → /model/Transformer_step_18000_2025-12-24_04-09-17.pt
+ copied -> ./saves/Transformer_step_18000_2025-12-24_04-09-17.pt
+7.048963269352913
+[Checkpoint] step=20000
+ saved → /model/Transformer_step_20000_2025-12-24_04-10-54.pt
+ copied -> ./saves/Transformer_step_20000_2025-12-24_04-10-54.pt
+7.038571018898487
+[Checkpoint] step=22000
+ saved → /model/Transformer_step_22000_2025-12-24_04-12-30.pt
+ copied -> ./saves/Transformer_step_22000_2025-12-24_04-12-30.pt
+7.016497819196094
+[Checkpoint] step=24000
+ saved → /model/Transformer_step_24000_2025-12-24_04-13-23.pt
+ copied -> ./saves/Transformer_step_24000_2025-12-24_04-13-23.pt
+6.943382905294498
+[Checkpoint] step=26000
+ saved → /model/Transformer_step_26000_2025-12-24_04-14-10.pt
+ copied -> ./saves/Transformer_step_26000_2025-12-24_04-14-10.pt
+6.869108430541479
+[Checkpoint] step=28000
+ saved → /model/Transformer_step_28000_2025-12-24_04-14-58.pt
+ copied -> ./saves/Transformer_step_28000_2025-12-24_04-14-58.pt
+6.821699158472674
+[Checkpoint] step=30000
+ saved → /model/Transformer_step_30000_2025-12-24_04-15-49.pt
+ copied -> ./saves/Transformer_step_30000_2025-12-24_04-15-49.pt
+6.807328747900327
+[Checkpoint] step=32000
+ saved → /model/Transformer_step_32000_2025-12-24_04-16-49.pt
+ copied -> ./saves/Transformer_step_32000_2025-12-24_04-16-49.pt
+6.766121156714856
+[Checkpoint] step=34000
+ saved → /model/Transformer_step_34000_2025-12-24_04-17-46.pt
+ copied -> ./saves/Transformer_step_34000_2025-12-24_04-17-46.pt
+6.712336813288577
+[Checkpoint] step=36000
+ saved → /model/Transformer_step_36000_2025-12-24_04-19-06.pt
+ copied -> ./saves/Transformer_step_36000_2025-12-24_04-19-06.pt
+6.698181391047107
+[Checkpoint] step=38000
+ saved → /model/Transformer_step_38000_2025-12-24_04-20-22.pt
+ copied -> ./saves/Transformer_step_38000_2025-12-24_04-20-22.pt
+6.67426422924117
+[Checkpoint] step=40000
+ saved → /model/Transformer_step_40000_2025-12-24_04-21-23.pt
+ copied -> ./saves/Transformer_step_40000_2025-12-24_04-21-23.pt
+6.660445696610212
+[Checkpoint] step=42000
+ saved → /model/Transformer_step_42000_2025-12-24_04-22-39.pt
+ copied -> ./saves/Transformer_step_42000_2025-12-24_04-22-39.pt
+6.639060706950369
+[Checkpoint] step=44000
+ saved → /model/Transformer_step_44000_2025-12-24_04-23-56.pt
+ copied -> ./saves/Transformer_step_44000_2025-12-24_04-23-56.pt
+6.617912977744233
+[Checkpoint] step=46000
+ saved → /model/Transformer_step_46000_2025-12-24_04-25-16.pt
+ copied -> ./saves/Transformer_step_46000_2025-12-24_04-25-16.pt
+6.590544571197551
+[Checkpoint] step=48000
+ saved → /model/Transformer_step_48000_2025-12-24_04-26-49.pt
+ copied -> ./saves/Transformer_step_48000_2025-12-24_04-26-49.pt
+6.563749671702584
+[Checkpoint] step=50000
+ saved → /model/Transformer_step_50000_2025-12-24_04-28-15.pt
+ copied -> ./saves/Transformer_step_50000_2025-12-24_04-28-15.pt
+6.533225168862343
+Epoch 0 ; loss 6.5087735474409705
+[Checkpoint] step=52000
+ saved → /model/Transformer_step_52000_2025-12-24_04-29-33.pt
+ copied -> ./saves/Transformer_step_52000_2025-12-24_04-29-33.pt
+6.281637353834763
+[Checkpoint] step=54000
+ saved → /model/Transformer_step_54000_2025-12-24_04-30-31.pt
+ copied -> ./saves/Transformer_step_54000_2025-12-24_04-30-31.pt
+5.61693896640471
+[Checkpoint] step=56000
+ saved → /model/Transformer_step_56000_2025-12-24_04-31-27.pt
+ copied -> ./saves/Transformer_step_56000_2025-12-24_04-31-27.pt
+5.3886216131715985
+[Checkpoint] step=58000
+ saved → /model/Transformer_step_58000_2025-12-24_04-32-25.pt
+ copied -> ./saves/Transformer_step_58000_2025-12-24_04-32-25.pt
+5.548744235371218
+[Checkpoint] step=60000
+ saved → /model/Transformer_step_60000_2025-12-24_04-33-33.pt
+ copied -> ./saves/Transformer_step_60000_2025-12-24_04-33-33.pt
+5.613580249970959
+[Checkpoint] step=62000
+ saved → /model/Transformer_step_62000_2025-12-24_04-35-13.pt
+ copied -> ./saves/Transformer_step_62000_2025-12-24_04-35-13.pt
+5.609998614497107
+[Checkpoint] step=64000
+ saved → /model/Transformer_step_64000_2025-12-24_04-36-51.pt
+ copied -> ./saves/Transformer_step_64000_2025-12-24_04-36-51.pt
+5.565052743881296
+[Checkpoint] step=66000
+ saved → /model/Transformer_step_66000_2025-12-24_04-38-22.pt
+ copied -> ./saves/Transformer_step_66000_2025-12-24_04-38-22.pt
+5.580957510172668
+[Checkpoint] step=68000
+ saved → /model/Transformer_step_68000_2025-12-24_04-40-00.pt
+ copied -> ./saves/Transformer_step_68000_2025-12-24_04-40-00.pt
+5.673654804965966
+[Checkpoint] step=70000
+ saved → /model/Transformer_step_70000_2025-12-24_04-41-36.pt
+ copied -> ./saves/Transformer_step_70000_2025-12-24_04-41-36.pt
+5.729097765036958
+[Checkpoint] step=72000
+ saved → /model/Transformer_step_72000_2025-12-24_04-43-14.pt
+ copied -> ./saves/Transformer_step_72000_2025-12-24_04-43-14.pt
+5.768245855371739
+[Checkpoint] step=74000
+ saved → /model/Transformer_step_74000_2025-12-24_04-44-51.pt
+ copied -> ./saves/Transformer_step_74000_2025-12-24_04-44-51.pt
+5.796721559525913
+[Checkpoint] step=76000
+ saved → /model/Transformer_step_76000_2025-12-24_04-45-43.pt
+ copied -> ./saves/Transformer_step_76000_2025-12-24_04-45-43.pt
+5.804085190180779
+[Checkpoint] step=78000
+ saved → /model/Transformer_step_78000_2025-12-24_04-46-33.pt
+ copied -> ./saves/Transformer_step_78000_2025-12-24_04-46-33.pt
+5.810719337909348
+[Checkpoint] step=80000
+ saved → /model/Transformer_step_80000_2025-12-24_04-47-22.pt
+ copied -> ./saves/Transformer_step_80000_2025-12-24_04-47-22.pt
+5.839927123832994
+[Checkpoint] step=82000
+ saved → /model/Transformer_step_82000_2025-12-24_04-48-16.pt
+ copied -> ./saves/Transformer_step_82000_2025-12-24_04-48-16.pt
+5.874190655125633
+[Checkpoint] step=84000
+ saved → /model/Transformer_step_84000_2025-12-24_04-49-17.pt
+ copied -> ./saves/Transformer_step_84000_2025-12-24_04-49-17.pt
+5.867259013716942
+[Checkpoint] step=86000
+ saved → /model/Transformer_step_86000_2025-12-24_04-50-17.pt
+ copied -> ./saves/Transformer_step_86000_2025-12-24_04-50-17.pt
+5.854887588591058
+[Checkpoint] step=88000
+ saved → /model/Transformer_step_88000_2025-12-24_04-51-37.pt
+ copied -> ./saves/Transformer_step_88000_2025-12-24_04-51-37.pt
+5.867396637172919
+[Checkpoint] step=90000
+ saved → /model/Transformer_step_90000_2025-12-24_04-52-53.pt
+ copied -> ./saves/Transformer_step_90000_2025-12-24_04-52-53.pt
+5.869777112401704
+[Checkpoint] step=92000
+ saved → /model/Transformer_step_92000_2025-12-24_04-53-54.pt
+ copied -> ./saves/Transformer_step_92000_2025-12-24_04-53-54.pt
+5.88700235590342
+[Checkpoint] step=94000
+ saved → /model/Transformer_step_94000_2025-12-24_04-55-11.pt
+ copied -> ./saves/Transformer_step_94000_2025-12-24_04-55-11.pt
+5.892663715188479
+[Checkpoint] step=96000
+ saved → /model/Transformer_step_96000_2025-12-24_04-56-28.pt
+ copied -> ./saves/Transformer_step_96000_2025-12-24_04-56-28.pt
+5.8984139169180185
+[Checkpoint] step=98000
+ saved → /model/Transformer_step_98000_2025-12-24_04-57-52.pt
+ copied -> ./saves/Transformer_step_98000_2025-12-24_04-57-52.pt
+5.895703528282962
+[Checkpoint] step=100000
+ saved → /model/Transformer_step_100000_2025-12-24_04-59-22.pt
+ copied -> ./saves/Transformer_step_100000_2025-12-24_04-59-22.pt
+5.888721039418335
+[Checkpoint] step=102000
+ saved → /model/Transformer_step_102000_2025-12-24_05-00-49.pt
+ copied -> ./saves/Transformer_step_102000_2025-12-24_05-00-49.pt
+5.87856841452435
+Epoch 1 ; loss 5.874286606440235
+[Checkpoint] step=104000
+ saved → /model/Transformer_step_104000_2025-12-24_05-02-03.pt
+ copied -> ./saves/Transformer_step_104000_2025-12-24_05-02-03.pt
+5.98758428314932
+[Checkpoint] step=106000
+ saved → /model/Transformer_step_106000_2025-12-24_05-02-58.pt
+ copied -> ./saves/Transformer_step_106000_2025-12-24_05-02-58.pt
+5.381003375169203
+[Checkpoint] step=108000
+ saved → /model/Transformer_step_108000_2025-12-24_05-03-54.pt
+ copied -> ./saves/Transformer_step_108000_2025-12-24_05-03-54.pt
+5.16659674204841
+[Checkpoint] step=110000
+ saved → /model/Transformer_step_110000_2025-12-24_05-04-52.pt
+ copied -> ./saves/Transformer_step_110000_2025-12-24_05-04-52.pt
+5.3565397989625145
+[Checkpoint] step=112000
+ saved → /model/Transformer_step_112000_2025-12-24_05-06-02.pt
+ copied -> ./saves/Transformer_step_112000_2025-12-24_05-06-02.pt
+5.433145554617402
+[Checkpoint] step=114000
+ saved → /model/Transformer_step_114000_2025-12-24_05-07-39.pt
+ copied -> ./saves/Transformer_step_114000_2025-12-24_05-07-39.pt
+5.423250425562867
+[Checkpoint] step=116000
+ saved → /model/Transformer_step_116000_2025-12-24_05-09-16.pt
+ copied -> ./saves/Transformer_step_116000_2025-12-24_05-09-16.pt
+5.38826381544088
+[Checkpoint] step=118000
+ saved → /model/Transformer_step_118000_2025-12-24_05-10-47.pt
+ copied -> ./saves/Transformer_step_118000_2025-12-24_05-10-47.pt
+5.428558261064855
+[Checkpoint] step=120000
+ saved → /model/Transformer_step_120000_2025-12-24_05-12-23.pt
+ copied -> ./saves/Transformer_step_120000_2025-12-24_05-12-23.pt
+5.522381528278048
+[Checkpoint] step=122000
+ saved → /model/Transformer_step_122000_2025-12-24_05-13-58.pt
+ copied -> ./saves/Transformer_step_122000_2025-12-24_05-13-58.pt
+5.581030361654719
+[Checkpoint] step=124000
+ saved → /model/Transformer_step_124000_2025-12-24_05-15-34.pt
+ copied -> ./saves/Transformer_step_124000_2025-12-24_05-15-34.pt
+5.6240655961769805
+[Checkpoint] step=126000
+ saved → /model/Transformer_step_126000_2025-12-24_05-17-09.pt
+ copied -> ./saves/Transformer_step_126000_2025-12-24_05-17-09.pt
+5.656885335180969
+[Checkpoint] step=128000
+ saved → /model/Transformer_step_128000_2025-12-24_05-17-57.pt
+ copied -> ./saves/Transformer_step_128000_2025-12-24_05-17-57.pt
+5.669910940811643
+[Checkpoint] step=130000
+ saved → /model/Transformer_step_130000_2025-12-24_05-18-44.pt
+ copied -> ./saves/Transformer_step_130000_2025-12-24_05-18-44.pt
+5.683224406440313
+[Checkpoint] step=132000
+ saved → /model/Transformer_step_132000_2025-12-24_05-19-32.pt
+ copied -> ./saves/Transformer_step_132000_2025-12-24_05-19-32.pt
+5.722892987343193
+[Checkpoint] step=134000
+ saved → /model/Transformer_step_134000_2025-12-24_05-20-24.pt
+ copied -> ./saves/Transformer_step_134000_2025-12-24_05-20-24.pt
+5.757701723479457
+[Checkpoint] step=136000
+ saved → /model/Transformer_step_136000_2025-12-24_05-21-24.pt
+ copied -> ./saves/Transformer_step_136000_2025-12-24_05-21-24.pt
+5.751806943850393
+[Checkpoint] step=138000
+ saved → /model/Transformer_step_138000_2025-12-24_05-22-27.pt
+ copied -> ./saves/Transformer_step_138000_2025-12-24_05-22-27.pt
+5.746847318538262
+[Checkpoint] step=140000
+ saved → /model/Transformer_step_140000_2025-12-24_05-23-44.pt
+ copied -> ./saves/Transformer_step_140000_2025-12-24_05-23-44.pt
+5.759247585800288
+[Checkpoint] step=142000
+ saved → /model/Transformer_step_142000_2025-12-24_05-25-00.pt
+ copied -> ./saves/Transformer_step_142000_2025-12-24_05-25-00.pt
+5.762644069391349
+[Checkpoint] step=144000
+ saved → /model/Transformer_step_144000_2025-12-24_05-26-01.pt
+ copied -> ./saves/Transformer_step_144000_2025-12-24_05-26-01.pt
+5.782751616447112
+[Checkpoint] step=146000
+ saved → /model/Transformer_step_146000_2025-12-24_05-27-17.pt
+ copied -> ./saves/Transformer_step_146000_2025-12-24_05-27-17.pt
+5.791679416808294
+[Checkpoint] step=148000
+ saved → /model/Transformer_step_148000_2025-12-24_05-28-33.pt
+ copied -> ./saves/Transformer_step_148000_2025-12-24_05-28-33.pt
+5.7988447358698325
+[Checkpoint] step=150000
+ saved → /model/Transformer_step_150000_2025-12-24_05-29-58.pt
+ copied -> ./saves/Transformer_step_150000_2025-12-24_05-29-58.pt
+5.798990578531565
+[Checkpoint] step=152000
+ saved → /model/Transformer_step_152000_2025-12-24_05-31-28.pt
+ copied -> ./saves/Transformer_step_152000_2025-12-24_05-31-28.pt
+5.792002385898401
+[Checkpoint] step=154000
+ saved → /model/Transformer_step_154000_2025-12-24_05-32-54.pt
+ copied -> ./saves/Transformer_step_154000_2025-12-24_05-32-54.pt
+5.783855343634664
+Epoch 2 ; loss 5.781335953302958
+[Checkpoint] step=156000
+ saved → /model/Transformer_step_156000_2025-12-24_05-34-05.pt
+ copied -> ./saves/Transformer_step_156000_2025-12-24_05-34-05.pt
+5.771725227630216
+[Checkpoint] step=158000
+ saved → /model/Transformer_step_158000_2025-12-24_05-35-00.pt
+ copied -> ./saves/Transformer_step_158000_2025-12-24_05-35-00.pt
+5.2693491211845025
+[Checkpoint] step=160000
+ saved → /model/Transformer_step_160000_2025-12-24_05-35-55.pt
+ copied -> ./saves/Transformer_step_160000_2025-12-24_05-35-55.pt
+5.0687332304103085
