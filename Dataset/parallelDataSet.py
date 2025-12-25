@@ -1,14 +1,23 @@
 import torch
-import torch.nn.functional as F
-from torch.utils.data import DataLoader, IterableDataset
-from typing import Iterator
+from torch.utils.data import Dataset
+import mmap
+import array
+import os
+
+def load_offsets(path):
+    arr = array.array("Q")
+    itemsize = arr.itemsize  # 8 bytes for uint64
+
+    filesize = os.path.getsize(path)
+    n = filesize // itemsize
+
+    with open(path, "rb") as f:
+        arr.fromfile(f, n)
+
+    return arr
 
 
-def collate_fn(batch, tokenizer, device, max_len=None):
-    """
-    batch: list of (en_str, hi_str)
-    returns: src_ids (B,S), tgt_ids (B,T) tensors on CPU (move to GPU in loop)
-    """
+def collate_fn(batch, tokenizer,device, max_len=None):
     en_texts = [x[0] for x in batch]
     hi_texts = [x[1] for x in batch]
 
@@ -18,39 +27,61 @@ def collate_fn(batch, tokenizer, device, max_len=None):
     pad_id = tokenizer.sp.pad_id()
 
     if max_len is not None:
-        X = [seq[:max_len] for seq in X]
-        Y = [seq[:max_len] for seq in Y]
+        X = [s[:max_len] for s in X]
+        Y = [s[:max_len] for s in Y]
 
-    max_len_X = max(len(s) for s in X)
-    max_len_Y = max(len(s) for s in Y)
+    max_x = max(len(s) for s in X)
+    max_y = max(len(s) for s in Y)
 
-    X_pad = [s + [pad_id] * (max_len_X - len(s)) for s in X]
-    Y_pad = [s + [pad_id] * (max_len_Y - len(s)) for s in Y]
+    X = [s + [pad_id] * (max_x - len(s)) for s in X]
+    Y = [s + [pad_id] * (max_y - len(s)) for s in Y]
 
-    src_ids = torch.tensor(X_pad, dtype=torch.long)
-    tgt_ids = torch.tensor(Y_pad, dtype=torch.long)
-
-    return src_ids, tgt_ids
-
-# IterableDataSet
+    return (
+        torch.tensor(X, dtype=torch.long),
+        torch.tensor(Y, dtype=torch.long),
+    )
 
 
-class ParallelTextDataset(IterableDataset):
+class ParallelTextDataset(Dataset):
 
-    def __init__(self, en_path, hi_path):
-        super().__init__()
+    def __init__(self, en_path, en_offset_path, hi_path, hi_offset_path):
+        self.en_offsets = load_offsets(en_offset_path)
+        self.hi_offsets = load_offsets(hi_offset_path)
 
-        self.en_path = en_path
-        self.hi_path = hi_path
+        assert len(self.en_offsets) == len(self.hi_offsets)
 
-    def __iter__(self) -> Iterator:
+        self.f_en = open(en_path, "rb")
+        self.f_hi = open(hi_path, "rb")
 
-        with open(self.en_path, encoding="utf-8") as f_en, \
-                open(self.hi_path, encoding="utf-8") as f_hi:
+        self.mm_en = mmap.mmap(self.f_en.fileno(), 0, access=mmap.ACCESS_READ)
+        self.mm_hi = mmap.mmap(self.f_hi.fileno(), 0, access=mmap.ACCESS_READ)
 
-            for en_line, hi_line in zip(f_en, f_hi):
-                en_line = en_line.strip()
-                hi_line = hi_line.strip()
+    def __len__(self):
+        return len(self.en_offsets)
 
-                yield en_line, hi_line
+    def __getitem__(self, i):
+        # EN
+        start_en = self.en_offsets[i]
+        end_en = (
+            self.en_offsets[i + 1]
+            if i + 1 < len(self.en_offsets)
+            else self.mm_en.size()
+        )
+        en = self.mm_en[start_en:end_en].decode("utf-8").rstrip("\r\n")
 
+        # HI
+        start_hi = self.hi_offsets[i]
+        end_hi = (
+            self.hi_offsets[i + 1]
+            if i + 1 < len(self.hi_offsets)
+            else self.mm_hi.size()
+        )
+        hi = self.mm_hi[start_hi:end_hi].decode("utf-8").rstrip("\r\n")
+
+        return en, hi
+
+    def __del__(self):
+        self.mm_en.close()
+        self.mm_hi.close()
+        self.f_en.close()
+        self.f_hi.close()

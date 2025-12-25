@@ -54,12 +54,14 @@ total_params = sum(p.numel() for p in en_hi.parameters())
 print(f"Total Model Parameters: {total_params:,}")
 pnt = checkpoint.find_latest_checkpoint("./saves")
 
+
 if pnt is None:
     print("There is no model to evaluate\n")
     exit(0)
 
-en_hi.load(pnt,map_location=device)
+chkpt = torch.load(pnt,map_location=device)
 
+en_hi.load_state_dict(chkpt["model"])
 
 en_hi.eval()
 with torch.inference_mode():

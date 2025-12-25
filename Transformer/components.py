@@ -59,6 +59,8 @@ class Attention(nn.Module):
         
         scores = Q @ K.transpose(-1, -2) / math.sqrt(self.O_dim) #(B,n_head,S_q,S_q)
 
+        scores = scores - scores.max(dim = -1, keepdims = True).values
+        
         if self.mode == "masked":
             mask = torch.triu(torch.ones(S_q, S_k, device=scores.device), diagonal=1).bool()
             scores = scores.masked_fill(mask, float('-inf'))

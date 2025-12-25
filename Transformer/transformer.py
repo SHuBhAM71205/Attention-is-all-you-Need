@@ -29,7 +29,7 @@ class Transformer(nn.Module):
         device = "cpu"
         
     ):
-        '''
+        '''  
         :param PATH: It is used to pass the folder path where the model will be save/is saved
         '''
         super().__init__()

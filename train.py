@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, IterableDataset
 
+logs = True
+logs_file_loc = "./logs"
 # customs libs
 import Tokenizer.tokenizer as tk
 from Transformer.transformer import Transformer
@@ -13,24 +15,21 @@ from Transformer.checkpoint import save_checkpoint, find_latest_checkpoint
 from Dataset.parallelDataSet import *
 
 # device agnostic
-
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Working on device {device}")
 
 # paths
-
-mode = str(input("Enter `colab` if working with the google colab \nEnter `local` if running locally \n"))
-
-
+# mode = str(input("Enter `colab` if working with the google colab \nEnter `local` if running locally \n"))
+mode = "local"
 train_en_path = "./Data/parallel-n/en-hi.en"
 train_hi_path = "./Data/parallel-n/en-hi.hi"
-
+train_en_offset_path = "./ByteOffsetGenerator/en_offset.bo"
+train_hi_offset_path = "./ByteOffsetGenerator/hi_offset.bo"
 
 runtime_dir = "/model" if mode =="colab" else None
 drive_dir = "./saves"
 
 # constants
-
 embedding_dims = 128
 d_ff = 100
 n_heads = 4
@@ -38,7 +37,9 @@ n_layers = 2
 batch_size = 128
 epochs = 5
 label_smoothing = 0.1
-
+step_counts = 0
+warmup_steps = 4000
+# tokenizer
 tokenizer = tk.Tokenizer(".", "./Data/parallel-n/en-hi.all")
 
 # Transformer Model
@@ -55,27 +56,43 @@ en_hi = Transformer(
 ).to(device)
 
 # DataLoader
-dataset = ParallelTextDataset(train_en_path, train_hi_path)
+dataset = ParallelTextDataset(train_en_path,train_en_offset_path, train_hi_path,train_hi_offset_path)
 
 loader = DataLoader(
     dataset,
     batch_size=batch_size,
+    shuffle=True,
     collate_fn=lambda batch: collate_fn(batch, tokenizer, device, max_len=254),
     num_workers=0,
 )
 
 # Optimizer
-optimizer = torch.optim.Adam(en_hi.parameters(), lr=1e-3,)
+## lr scheduler according to the Attention is all you need
+def lr_scheduler(d_model,global_step,warmup_steps):
+    global_step = max(global_step,1)
+    lr = (d_model ** - 0.5) * min(
+                                    global_step ** -0.5 ,
+                                    global_step * (warmup_steps ** -1.5)
+                                    )
+    return lr
+## optimizer
+optimizer = torch.optim.Adam(en_hi.parameters(), lr=1.0,betas=(0.9,0.98),eps=1e-9) # dont try to make it 1.0 thats here cause of the custom lr scheduler
+
+global_step = 0
 
 if __name__ =="__main__":
     
-
     latest = find_latest_checkpoint(drive_dir)
     if latest:
-        print("Loading from checkpoint:", latest)
-        en_hi.load(latest, map_location="cuda")
-
-        global_step = int(latest.split("_step_")[1].split("_")[0])
+        print(f"Loading from checkpoint: {latest}   ", latest)
+        
+        chkpt=torch.load(latest,map_location=device)
+        en_hi.load_state_dict(chkpt["model"])
+        optimizer.load_state_dict(chkpt["optimizer"])
+        global_step = chkpt["global_step"]
+        
+        for p in en_hi.parameters():
+            print(p.grad)
     else:
         print("Starting fresh")
         global_step = 0
@@ -84,8 +101,7 @@ if __name__ =="__main__":
 
     # Training Loop
     losses = []
-    print(
-        f"Started Trainnig Loop with epoch: {epochs} and batch size: {batch_size}\n")
+    print(f"Started Trainnig Loop with epoch: {epochs} and batch size: {batch_size}\n")
 
     en_hi.train()
     for epoch in range(epochs):
@@ -108,27 +124,50 @@ if __name__ =="__main__":
             )
             
             loss_batch += loss.item()
+            
+            global_step += 1
+            
+            for param_group in optimizer.param_groups:
+                param_group["lr"] = lr_scheduler(
+                                                    d_model=embedding_dims,
+                                                    global_step=global_step , 
+                                                    warmup_steps= warmup_steps
+                                                    )
             optimizer.zero_grad()
 
             loss.backward()
-
+            
+            torch.nn.utils.clip_grad_norm_(en_hi.parameters(), 1.0)
+            
             optimizer.step()
 
-            global_step += 1
-            cnt+=1
+            cnt+=1 
 
             if global_step % save_every == 0:
                 
-                save_checkpoint(en_hi, runtime_dir, drive_dir, global_step,mode=mode)
+                save_checkpoint(
+                        model = en_hi,
+                        optimizer=optimizer,
+                        runtime_dir=runtime_dir,
+                        drive_dir=drive_dir,
+                        step=global_step,
+                        mode = mode
+                    )
                 print(loss_batch / cnt)
-
-        loss_batch /= batch_size
+            break
+        loss_batch /= cnt
 
         losses.append(loss_batch)
 
         print(f"Epoch {epoch} ; loss {loss_batch}")
+        
+        break
     
-    
-    save_checkpoint(en_hi, runtime_dir, drive_dir, global_step,mode = mode)
-
-
+    save_checkpoint(
+                        model = en_hi,
+                        optimizer=optimizer,
+                        runtime_dir=runtime_dir,
+                        drive_dir=drive_dir,
+                        step=global_step,
+                        mode = mode
+                    )
