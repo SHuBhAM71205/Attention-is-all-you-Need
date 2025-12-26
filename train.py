@@ -1,22 +1,21 @@
-
-from typing import Iterator
 import torch
-import torch.nn as nn
-import matplotlib.pyplot as plt
 import torch.nn.functional as F
-from torch.utils.data import DataLoader, IterableDataset
-
-logs = True
-logs_file_loc = "./logs"
+from torch.utils.data import DataLoader
+from Logger.logger import setup_logger
 # customs libs
 import Tokenizer.tokenizer as tk
 from Transformer.transformer import Transformer
 from Transformer.checkpoint import save_checkpoint, find_latest_checkpoint
 from Dataset.parallelDataSet import *
 
+logs = True
+logs_file_loc = "./logs"
+
+logger = setup_logger("./logs")
+
 # device agnostic
 device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f"Working on device {device}")
+logger.info(f"Working on device {device}")
 
 # paths
 # mode = str(input("Enter `colab` if working with the google colab \nEnter `local` if running locally \n"))
@@ -84,24 +83,22 @@ if __name__ =="__main__":
     
     latest = find_latest_checkpoint(drive_dir)
     if latest:
-        print(f"Loading from checkpoint: {latest}   ", latest)
+        logger.info(f"Loading from checkpoint: {latest}   ")
         
         chkpt=torch.load(latest,map_location=device)
         en_hi.load_state_dict(chkpt["model"])
         optimizer.load_state_dict(chkpt["optimizer"])
         global_step = chkpt["global_step"]
         
-        for p in en_hi.parameters():
-            print(p.grad)
     else:
-        print("Starting fresh")
+        logger.info("Starting fresh")
         global_step = 0
 
     save_every = 2000  # steps
 
     # Training Loop
     losses = []
-    print(f"Started Trainnig Loop with epoch: {epochs} and batch size: {batch_size}\n")
+    logger.info(f"Started Trainnig Loop with epoch: {epochs} and batch size: {batch_size}\n")
 
     en_hi.train()
     for epoch in range(epochs):
@@ -153,15 +150,15 @@ if __name__ =="__main__":
                         step=global_step,
                         mode = mode
                     )
-                print(loss_batch / cnt)
-            break
+                logger.info(loss_batch / cnt)
+            
         loss_batch /= cnt
 
         losses.append(loss_batch)
 
-        print(f"Epoch {epoch} ; loss {loss_batch}")
+        logger.info(f"Epoch {epoch} ; loss {loss_batch}")
         
-        break
+        
     
     save_checkpoint(
                         model = en_hi,

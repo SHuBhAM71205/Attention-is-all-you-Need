@@ -1,0 +1,4 @@
+[2025-12-26 09:13:24] INFO: Working on device cuda
+[2025-12-26 09:13:29] INFO: Loading from checkpoint: ./saves\Transformer_step_1_2025-12-25_18-06-11.pt   
+[2025-12-26 09:13:29] INFO: Started Trainnig Loop with epoch: 5 and batch size: 128
+

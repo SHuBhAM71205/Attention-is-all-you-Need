@@ -1,10 +1,11 @@
 import torch
-from torch.utils.data import DataLoader,IterableDataset
+from torch.utils.data import DataLoader
 import torch.nn.functional as F
 
 from Dataset.parallelDataSet import *
 from Tokenizer import tokenizer
 from Transformer import transformer,checkpoint
+from Logger.logger import setup_logger
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -18,7 +19,9 @@ label_smoothing = 0.1
 
 # test data path
 dev_en_path = "./Data/dev_test/dev.en"
+dev_en_offset_path = "./Data/dev_test/dev_en_offset.bo"
 dev_hi_path = "./Data/dev_test/dev.hi"
+dev_hi_offset_path = "./Data/dev_test/dev_hi_offset.bo"
 
 
 mode = "local"
@@ -28,11 +31,12 @@ drive_dir = "./saves"
 
 tknizer = tokenizer.Tokenizer(model_path=".",data_path="./Data/parallel-n/en-hi.all")
 
-dataset = ParallelTextDataset(dev_en_path,dev_hi_path)
+dataset = ParallelTextDataset(dev_en_path,dev_en_offset_path,dev_hi_path,dev_hi_offset_path)
 
 loader = DataLoader(
     dataset,
     batch_size=batch_size,
+    shuffle=True,
     collate_fn=lambda batch: collate_fn(batch, tknizer, device, max_len=254),
     num_workers=0,
 )

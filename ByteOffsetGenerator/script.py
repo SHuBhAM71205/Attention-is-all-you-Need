@@ -1,8 +1,8 @@
 import mmap
 import array
 # bo is byte offset
-byte_offset_loc_en = "./en_offset.bo"
-byte_offset_loc_hi = "./hi_offset.bo"
+byte_offset_loc_en = "../Data/dev_test/test_en_offset.bo"
+byte_offset_loc_hi = "../Data/dev_test/test_hi_offset.bo"
 
 data_dir = "../Data"
 
@@ -14,7 +14,7 @@ def save_offset(offset_lst,file_loc):
 en_offsets = []
 hi_offsets = []
 
-with open(f"{data_dir}/parallel-n/en-hi.en", "rb") as f:
+with open(f"{data_dir}/dev_test/test.en", "rb") as f:
     mm = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
     en_offsets.append(0)
     size = mm.size()
@@ -23,7 +23,7 @@ with open(f"{data_dir}/parallel-n/en-hi.en", "rb") as f:
             en_offsets.append(i + 1)
     mm.close()
 
-with open(f"{data_dir}/parallel-n/en-hi.hi", "rb") as f:
+with open(f"{data_dir}/dev_test/test.hi", "rb") as f:
     mm = mmap.mmap(f.fileno(), 0, access=mmap.ACCESS_READ)
     hi_offsets.append(0)
     size = mm.size()

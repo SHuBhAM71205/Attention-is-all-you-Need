@@ -58,11 +58,13 @@ en_hi = Transformer(
     PATH="./saves",
     device=device
 ).to(device)
+
 chkpt = find_latest_checkpoint("./saves")
 
 
-en_hi.load(chkpt , map_location=device)
+latest_ckpt = torch.load(chkpt,map_location=device)
 
+en_hi.load_state_dict(latest_ckpt["model"])
 with torch.inference_mode():
     stmt = str(input("Enter the english statment:\n"))
     
