@@ -36,7 +36,6 @@ class Transformer(nn.Module):
         
         self.PATH = PATH
         self.drive_path = drive_path
-        self.device = device
         
         self.tokenizer = tokenizer
         self.embedding_dims = embedding_dims
@@ -65,10 +64,6 @@ class Transformer(nn.Module):
 
         self.W_out = nn.Parameter(torch.randn(size = (embedding_dims, self.vocab_size)) / math.sqrt(embedding_dims))
         self.b_out = nn.Parameter(torch.zeros(self.vocab_size))
-        try:
-            self.load()
-        except Exception as  e:
-            pass
         
     
     def embed(self, token_ids: torch.Tensor) -> torch.Tensor:
@@ -76,7 +71,7 @@ class Transformer(nn.Module):
         token_ids: (B, L) int64 tensor
         return:    (B, L, embedding_dims)
         """
-        
+        device = token_ids.device
         B, L = token_ids.shape
 
         if L > self.max_tokens:
@@ -85,7 +80,7 @@ class Transformer(nn.Module):
 
         tok_emb = self.token_embedding[token_ids] 
 
-        pos_ids = torch.arange(L, dtype=torch.long).unsqueeze(0).repeat(B, 1)
+        pos_ids = torch.arange(L, dtype=torch.long).unsqueeze(0).repeat(B, 1).to(device)
         pos_emb = self.pos_embedding[pos_ids] 
 
         return tok_emb + pos_emb
@@ -120,8 +115,10 @@ class Transformer(nn.Module):
         src_pad_mask: (B, S)  True on PAD
         returns: logits (B, T, vocab_size)
         """
+        device = tgt_ids.device
+        
         tgt_emb = self.embed(tgt_ids) 
-        tgt_pad_mask = self.make_pad_mask(tgt_ids).to(self.device) 
+        tgt_pad_mask = self.make_pad_mask(tgt_ids)
 
         dec_out = self.decoder(
             tgt_emb,
@@ -142,10 +139,12 @@ class Transformer(nn.Module):
         src_pad_mask: (B, S)
         returns:      generated_ids (B, T_generated)
         """
-        src_pad_mask.to(self.device)
+        
+        device = enc_out.device
+        src_pad_mask=src_pad_mask.to(device)
         B = enc_out.shape[0]
         
-        generated = torch.full((B, 1), self.bos_id, dtype=torch.long).to(self.device)
+        generated = torch.full((B, 1), self.bos_id, dtype=torch.long).to(device)
 
         for _ in range(max_new_tokens):
             logits = self.decode(generated, enc_out, src_pad_mask)
@@ -153,7 +152,7 @@ class Transformer(nn.Module):
             next_logits = logits[:, -1, :]
             next_token  = torch.argmax(next_logits, dim=-1)
 
-            next_token = next_token.unsqueeze(1).to(self.device)  # (B,1)
+            next_token = next_token.unsqueeze(1).to(device)  # (B,1)
             generated  = torch.cat([generated, next_token], dim=1)
 
             if (next_token == self.eos_id).all():

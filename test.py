@@ -9,20 +9,22 @@ from Logger.logger import setup_logger
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
-embedding_dims = 128
-d_ff = 100
-n_heads = 4
-n_layers = 2
+embedding_dims = 512
+d_ff = 2048
+n_heads = 8
+n_layers = 6
 batch_size = 128
 epochs = 5
 label_smoothing = 0.1
+step_counts = 0
+warmup_steps = 4000
 
 # test data path
-dev_en_path = "./Data/dev_test/dev.en"
-dev_en_offset_path = "./Data/dev_test/dev_en_offset.bo"
-dev_hi_path = "./Data/dev_test/dev.hi"
-dev_hi_offset_path = "./Data/dev_test/dev_hi_offset.bo"
 
+en_bin="./Data/tokenized/dev_en.tok.bin"
+en_idx="./Data/tokenized/dev_en.tok.idx"
+hi_bin="./Data/tokenized/dev_hi.tok.bin"
+hi_idx="./Data/tokenized/dev_hi.tok.idx"
 
 mode = "local"
 
@@ -31,15 +33,9 @@ drive_dir = "./saves"
 
 tknizer = tokenizer.Tokenizer(model_path=".",data_path="./Data/parallel-n/en-hi.all")
 
-dataset = ParallelTextDataset(dev_en_path,dev_en_offset_path,dev_hi_path,dev_hi_offset_path)
+dataset = TokenizedParallelDataset(en_bin,en_idx,hi_bin,hi_idx)
 
-loader = DataLoader(
-    dataset,
-    batch_size=batch_size,
-    shuffle=True,
-    collate_fn=lambda batch: collate_fn(batch, tknizer, device, max_len=254),
-    num_workers=0,
-)
+
 
 en_hi = transformer.Transformer(
     tknizer,
@@ -49,9 +45,18 @@ en_hi = transformer.Transformer(
     num_layers_enc=n_layers,
     num_layers_dec=n_layers,
     max_tokens=256,
-    PATH="./saves",
-    device=device
+    PATH="./saves"
 ).to(device)
+
+pad_id = en_hi.pad_id
+
+loader = DataLoader(
+    dataset,
+    batch_size=batch_size,
+    shuffle=True,
+    collate_fn=lambda b: collate_fn(b, pad_id),
+    num_workers=0,
+)
 
 total_params = sum(p.numel() for p in en_hi.parameters())
 

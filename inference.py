@@ -16,10 +16,10 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 test_en_path = "./Data/dev_test/test.en"
 test_hi_path = "./Data/dev_test/test.hi"
 
-embedding_dims = 128
-d_ff = 100
-n_heads = 4
-n_layers = 2
+embedding_dims = 512
+d_ff = 2048
+n_heads = 8
+n_layers = 6
 batch_size = 128
 epochs = 5
 label_smoothing = 0.1

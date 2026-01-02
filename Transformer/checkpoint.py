@@ -14,19 +14,21 @@ def make_ckpt_name(model, step):
     cls = model.__class__.__name__
     return f"{cls}_step_{step}_{timestamp()}.pt"
 
-def save_checkpoint(model,optimizer,runtime_dir, drive_dir, step, mode):
+def save_checkpoint(model,optimizer,scaler,runtime_dir, drive_dir, step,epoch,mode):
     ensure_dirs(drive_dir)
 
-    fname = make_ckpt_name(model, step)
+    fname = make_ckpt_name(model.module, step)
 
     drive_path = os.path.join(drive_dir, fname)
 
     print(f"[Checkpoint] step={step}")
 
     save_dict = {
-    "model": model.state_dict(),
+    "model": model.module.state_dict(),
     "optimizer": optimizer.state_dict(),
-    "global_step": step
+    "scaler": scaler.state_dict(),
+    "global_step": step,
+    "epoch": epoch
     }
     
     if mode == "colab":

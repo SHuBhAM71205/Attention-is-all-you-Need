@@ -70,10 +70,10 @@ class Dropout(nn.Module):
         
     def forward(self,x: torch.Tensor):
         mode = torch.is_inference_mode_enabled() or not self.training
-        
+        device = x.device
         if mode is not True:
             
-            mask = torch.bernoulli(torch.full(size = x.shape , fill_value= 1-self.droupout_rate , device = 'cuda' if torch.cuda.is_available() else 'cpu'))
+            mask = torch.bernoulli(torch.full(size = x.shape , fill_value= 1-self.droupout_rate , device = device))
             
             return x * mask / (1 - self.droupout_rate)
         
