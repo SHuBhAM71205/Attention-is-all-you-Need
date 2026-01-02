@@ -1,6 +1,5 @@
 import torch
 from torch.utils.data import Dataset
-import mmap
 import array
 import os
 
@@ -17,71 +16,48 @@ def load_offsets(path):
     return arr
 
 
-def collate_fn(batch, tokenizer,device, max_len=None):
-    en_texts = [x[0] for x in batch]
-    hi_texts = [x[1] for x in batch]
+def collate_fn(batch, pad_id):
+    xs, ys = zip(*batch)
 
-    X = tokenizer.encode_batch(en_texts)
-    Y = tokenizer.encode_batch(hi_texts)
+    max_x = max(x.size(0) for x in xs)
+    max_y = max(y.size(0) for y in ys)
 
-    pad_id = tokenizer.sp.pad_id()
+    X = torch.full((len(xs), max_x), pad_id, dtype=torch.long)
+    Y = torch.full((len(ys), max_y), pad_id, dtype=torch.long)
 
-    if max_len is not None:
-        X = [s[:max_len] for s in X]
-        Y = [s[:max_len] for s in Y]
+    for i, (x, y) in enumerate(zip(xs, ys)):
+        X[i, :x.size(0)] = x
+        Y[i, :y.size(0)] = y
 
-    max_x = max(len(s) for s in X)
-    max_y = max(len(s) for s in Y)
+    return X, Y
 
-    X = [s + [pad_id] * (max_x - len(s)) for s in X]
-    Y = [s + [pad_id] * (max_y - len(s)) for s in Y]
-
-    return (
-        torch.tensor(X, dtype=torch.long),
-        torch.tensor(Y, dtype=torch.long),
-    )
-
-
-class ParallelTextDataset(Dataset):
-
-    def __init__(self, en_path, en_offset_path, hi_path, hi_offset_path):
-        self.en_offsets = load_offsets(en_offset_path)
-        self.hi_offsets = load_offsets(hi_offset_path)
+class TokenizedParallelDataset(Dataset):
+    def __init__(self, en_bin, en_idx, hi_bin, hi_idx):
+        self.en_offsets = load_offsets(en_idx)
+        self.hi_offsets = load_offsets(hi_idx)
 
         assert len(self.en_offsets) == len(self.hi_offsets)
 
-        self.f_en = open(en_path, "rb")
-        self.f_hi = open(hi_path, "rb")
+        self.en_tokens = array.array("i")
+        self.hi_tokens = array.array("i")
 
-        self.mm_en = mmap.mmap(self.f_en.fileno(), 0, access=mmap.ACCESS_READ)
-        self.mm_hi = mmap.mmap(self.f_hi.fileno(), 0, access=mmap.ACCESS_READ)
+        with open(en_bin, "rb") as f:
+            self.en_tokens.fromfile(f, os.path.getsize(en_bin) // 4)
+
+        with open(hi_bin, "rb") as f:
+            self.hi_tokens.fromfile(f, os.path.getsize(hi_bin) // 4)
 
     def __len__(self):
         return len(self.en_offsets)
 
     def __getitem__(self, i):
-        # EN
-        start_en = self.en_offsets[i]
-        end_en = (
-            self.en_offsets[i + 1]
-            if i + 1 < len(self.en_offsets)
-            else self.mm_en.size()
+        en_start = self.en_offsets[i]
+        en_end = self.en_offsets[i + 1] if i + 1 < len(self.en_offsets) else len(self.en_tokens)
+
+        hi_start = self.hi_offsets[i]
+        hi_end = self.hi_offsets[i + 1] if i + 1 < len(self.hi_offsets) else len(self.hi_tokens)
+
+        return (
+            torch.tensor(self.en_tokens[en_start:en_end], dtype=torch.long),
+            torch.tensor(self.hi_tokens[hi_start:hi_end], dtype=torch.long),
         )
-        en = self.mm_en[start_en:end_en].decode("utf-8").rstrip("\r\n")
-
-        # HI
-        start_hi = self.hi_offsets[i]
-        end_hi = (
-            self.hi_offsets[i + 1]
-            if i + 1 < len(self.hi_offsets)
-            else self.mm_hi.size()
-        )
-        hi = self.mm_hi[start_hi:end_hi].decode("utf-8").rstrip("\r\n")
-
-        return en, hi
-
-    def __del__(self):
-        self.mm_en.close()
-        self.mm_hi.close()
-        self.f_en.close()
-        self.f_hi.close()
