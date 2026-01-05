@@ -90,7 +90,7 @@ class Transformer(nn.Module):
         token_ids: (B, L)
         return:    (B, L) boolean mask, True where PAD
         """
-        return (token_ids == self.pad_id)
+        return (token_ids != self.pad_id)
     
     def encode(self, src_ids: torch.Tensor):
         """
@@ -170,7 +170,6 @@ class Transformer(nn.Module):
         """
         
         enc_out, src_pad_mask = self.encode(src_ids)
-        
         
         if tgt_ids is None:
             return self.infer(enc_out, src_pad_mask)

@@ -16,7 +16,6 @@ from torch.utils.data.distributed import DistributedSampler
 
 from torch.amp.grad_scaler import GradScaler
 
-
 logs = True
 logs_file_loc = "./logs"
 
@@ -101,7 +100,7 @@ loader = DataLoader(
 ## lr scheduler according to the Attention is all you need
 def lr_scheduler(d_model,global_step,warmup_steps):
     global_step = max(global_step,1)
-    lr = (d_model ** - 0.5) * min(
+    lr = 1.0 * (d_model ** - 0.5) * min( # maybe this is the reason for that 
                                     global_step ** -0.5 ,
                                     global_step * (warmup_steps ** -1.5)
                                     )
@@ -166,7 +165,9 @@ if __name__ =="__main__":
                     ignore_index=en_hi.module.pad_id, 
                     label_smoothing=label_smoothing
                 )
-            
+                if loss.isnan():
+                    print("Found the loss is NAN for some values")
+                
             loss_batch += loss.item()
             
             scaler.scale(loss).backward()
@@ -197,7 +198,7 @@ if __name__ =="__main__":
                 if dist.get_rank() == 0:
                     logger.info(loss_batch / cnt)
             
-        loss_batch /= cnt
+        loss_batch /= global_step
 
         losses.append(loss_batch)
         if dist.get_rank() == 0:

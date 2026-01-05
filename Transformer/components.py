@@ -38,65 +38,68 @@ class Attention(nn.Module):
         nn.init.xavier_uniform_(self.v)
         nn.init.xavier_uniform_(self.Wo)
         
-    def forward(self, q, kv=None ,attn_mask=None):
-        """
-        q  shape : (B, S_q, E) contain the current and the previous tokens
-        kv shape : (B, S_k, E) or None
-
-        If kv is None → self-attention: kv = q
-        """
+    def forward(self, q, kv=None, attn_mask=None):
 
         if kv is None:
             kv = q
 
-        B, S_q, E = q.shape
+        B, S_q, _ = q.shape
         _, S_k, _ = kv.shape
 
-
-        q = q.unsqueeze(1) #(B,1,S_q,E)
-        
-        Q = q @ self.q #(B,n_head,S_q or 1,O_dim) # multiple queries is generated
-        
-        K = kv @ self.k #(B,S_q,O_dim)
-        
-        K = K.unsqueeze(1) #(B,1,S_q,O_dim)
-        
-        V = kv @ self.v #(B,S_q,O_dim)
-        
-        V = V.unsqueeze(1) #(B,1,S_q,O_dim)
-        
-        mask = attn_mask
-        if not self.flash_available and self.mode == "masked":
-            causal_mask = torch.triu(torch.ones((S_q, S_k), device=q.device), diagonal=1).bool()
-            mask = causal_mask if mask is None else (mask | causal_mask)
-        
         if self.flash_available:
+            Q = q.unsqueeze(1) @ self.q          # (B, H, S_q, O)
+            K = (kv @ self.k).unsqueeze(1)         # (B,1, S_k, O)
+            V = (kv @ self.v).unsqueeze(1)          # (B,1, S_k, O)
+            
+            flash_mask = attn_mask # attn mask shape is (B,1,1,seq_len)
+            if self.mode == "masked":
+                flash_mask = flash_mask & torch.tril(torch.ones(size=(1,1,S_q,S_k),device=q.device)).bool()
+                
+                invalid = ~flash_mask.any(dim=-1, keepdim=True)
+                flash_mask[..., 0] |= invalid.squeeze(-1)
             
             out = torch.nn.functional.scaled_dot_product_attention(
-                                                                    Q,K,V,
-                                                                    attn_mask=attn_mask,
-                                                                    dropout_p=0.2 if self.training else 0.0,
-                                                                    is_causal= True if self.mode == "masked" else False,
-                                                                    enable_gqa=True
-                                                                )
+                Q,K,V,
+                attn_mask=flash_mask,
+                dropout_p=0.1 if self.training else 0.0,
+                is_causal = False,
+                enable_gqa = True
+            )
+
         else:
             
-            with torch.autocast(device_type="cuda",enabled=False):
-                Q_f ,K_f,V_f= Q.float(),K.float(),V.float()
-                
-                scores = Q_f @ K_f.transpose(-1, -2) / math.sqrt(self.O_dim) #(B,n_head,S_q,S_q)
+            # Belive me this below part is wrong it has some changes pending 
+            # because i have change the mask wherevever there is mask req i made it false 
+            # ::to me future
+            # if this fallback from flash it for sure crash
+            
+            q = q.unsqueeze(1)              # (B,1,S_q,E)
+            Q = q @ self.q                  # (B,H,S_q,O)
 
-                scores = scores - scores.max(dim = -1, keepdims = True).values
+            K = kv @ self.k                 # (B,S_k,O)
+            K = K.unsqueeze(1)              # (B,1,S_k,O)
 
+            V = kv @ self.v
+            V = V.unsqueeze(1)
+
+            mask = attn_mask
+            if self.mode == "masked":
+                causal_mask = torch.triu(
+                    torch.ones((S_q, S_k), device=q.device),
+                    diagonal=1
+                ).bool()
+                mask = causal_mask if mask is None else (mask | causal_mask)
+
+            with torch.autocast(device_type="cuda", enabled=False):
+                Q_f, K_f, V_f = Q.float(), K.float(), V.float()
+                scores = Q_f @ K_f.transpose(-1, -2) / math.sqrt(self.O_dim)
+                scores = scores - scores.max(dim=-1, keepdims=True).values
                 scores = scores.masked_fill(mask, float('-inf'))
-                                
-                probs = torch.softmax(scores, dim=-1) #(B,n_head,S_q,S_q)
+                probs = torch.softmax(scores, dim=-1)
+                out = probs @ V_f
                 
-                out = probs @ V_f #(B,n_head,S_q,o_dims)
-        
         out = out.permute(0, 2, 1, 3).reshape(B, S_q, self.O_dim * self.heads)
-
-        return (out.type_as(q) if not self.flash_available else out) @ self.Wo
+        return out.type_as(q) @ self.Wo
 
 class FFN(nn.Module):
     def __init__(self, embedding_dims, d_hidden):
@@ -110,12 +113,14 @@ class FFN(nn.Module):
         self.embedding_dims  = embedding_dims
         self.d_hidden = d_hidden
 
-        self.W1 = nn.Parameter(torch.randn(size = (embedding_dims, d_hidden)) / math.sqrt(embedding_dims))
+        self.W1 = nn.Parameter(torch.empty(size = (embedding_dims, d_hidden)) / math.sqrt(embedding_dims))
         self.b1 = nn.Parameter(torch.zeros(d_hidden))
         self.W2 = nn.Parameter(torch.randn(size = (d_hidden, embedding_dims)) / math.sqrt(d_hidden))
         self.b2 = nn.Parameter(torch.zeros(embedding_dims))
 
-
+        nn.init.kaiming_uniform_(self.W1)
+        nn.init.kaiming_uniform_(self.W2)
+        
     def forward(self, x):
         """
         x: (B, S, embedding_dims)

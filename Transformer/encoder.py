@@ -19,15 +19,11 @@ class EncoderLayer(nn.Module):
 
     def forward(self, x, src_pad_mask=None):
         
-        prob = torch.tensor([0.1,0.9])
-        
-        mode = torch.is_inference_mode_enabled()
-        
         attn_mask = None
         
         if src_pad_mask is not None:
             attn_mask = src_pad_mask.unsqueeze(1).unsqueeze(2)
-            
+
         x_norm = self.addnorm1(x)
         
         att_out = self.drop(self.self_attn(q=x_norm, kv=x_norm, attn_mask=attn_mask))
