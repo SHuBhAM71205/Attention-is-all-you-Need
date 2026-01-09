@@ -81,7 +81,7 @@ class Decoder(nn.Module):
 
 class Dropout(nn.Module):
     
-    def __init__(self,dropout_rate=0.2):
+    def __init__(self,dropout_rate=0.1):
         super().__init__()
         self.droupout_rate = dropout_rate
         

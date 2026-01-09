@@ -16,6 +16,21 @@ from torch.utils.data.distributed import DistributedSampler
 
 from torch.amp.grad_scaler import GradScaler
 
+import time
+
+class ScaleLogger:
+    def __init__(self, path):
+        self.path = path
+
+    def log(self, step, scale):
+        with open(self.path, "a") as f:
+            f.write(f"{time.time()},{step},{scale}\n")
+
+
+scale_logger = ScaleLogger("./logs/scaler.log")
+
+
+
 logs = True
 logs_file_loc = "./logs"
 
@@ -44,9 +59,9 @@ embedding_dims = 512
 d_ff = 2048
 n_heads = 8
 n_layers = 6
-batch_size = 32
+batch_size = 100 #32 for T4
 epochs = 5
-label_smoothing = 0.1
+label_smoothing = 0.01
 step_counts = 0
 warmup_steps = 4000
 # tokenizer
@@ -89,12 +104,15 @@ loader = DataLoader(
     dataset,
     batch_size=batch_size,
     sampler=sampler,
-    num_workers=2,
+    num_workers=12, #2
     pin_memory=True,
     persistent_workers=True,
-    prefetch_factor=4,
+    prefetch_factor=6, #4
     collate_fn=lambda b: collate_fn(b, pad_id)
 )
+
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.backends.cudnn.allow_tf32 = True
 
 # Optimizer
 ## lr scheduler according to the Attention is all you need
@@ -108,11 +126,20 @@ def lr_scheduler(d_model,global_step,warmup_steps):
 ## optimizer
 optimizer = torch.optim.Adam(en_hi.parameters(), lr=1.0,betas=(0.9,0.98),eps=1e-8) # dont try to make it 1.0 thats here cause of the custom lr scheduler
 
+def reset_adam_momentum(optimizer):
+    for state in optimizer.state.values():
+        if "exp_avg" in state:
+            state["exp_avg"].zero_()
+        if "exp_avg_sq" in state:
+            state["exp_avg_sq"].zero_()
+
+
 global_step = 0
 
 if __name__ =="__main__":
     epoch_final = 0
     i = 0
+    global_step = 0
     latest = find_latest_checkpoint(drive_dir)
     if latest:
         logger.info(f"Loading from checkpoint: {latest}   ")
@@ -123,6 +150,7 @@ if __name__ =="__main__":
         scaler.load_state_dict(chkpt["scaler"])
         i = chkpt["epoch"]
         global_step = chkpt["global_step"]
+        # reset_adam_momentum(optimizer)
         
     else:
         
@@ -152,21 +180,21 @@ if __name__ =="__main__":
 
             optimizer.zero_grad(set_to_none=True)
             
-            with torch.autocast(device_type="cuda", dtype=torch.float16):
+            with torch.autocast(device_type="cuda",dtype=torch.bfloat16):
                 logits, tgt_target = en_hi(src_ids, tgt_ids)
+            
+            logits = logits.float()
+            logits_flat = logits.reshape(-1, logits.size(-1))
+            tgt_flat = tgt_target.reshape(-1)
 
-                logits_flat = logits.reshape(-1, logits.size(-1))
-                tgt_flat = tgt_target.reshape(-1)
-
-            with torch.autocast(device_type="cuda",enabled=False):
-                loss = F.cross_entropy(
-                    logits_flat,
-                    tgt_flat, 
-                    ignore_index=en_hi.module.pad_id, 
-                    label_smoothing=label_smoothing
-                )
-                if loss.isnan():
-                    print("Found the loss is NAN for some values")
+            loss = F.cross_entropy(
+                logits_flat,
+                tgt_flat, 
+                ignore_index=en_hi.module.pad_id, 
+                label_smoothing=label_smoothing
+            )
+            if loss.isnan():
+                print("Found the loss is NAN for some values")
                 
             loss_batch += loss.item()
             
@@ -198,7 +226,7 @@ if __name__ =="__main__":
                 if dist.get_rank() == 0:
                     logger.info(loss_batch / cnt)
             
-        loss_batch /= global_step
+        loss_batch /= cnt
 
         losses.append(loss_batch)
         if dist.get_rank() == 0:
@@ -209,8 +237,8 @@ if __name__ =="__main__":
     save_checkpoint(
                         model = en_hi,
                         optimizer=optimizer,
-                        runtime_dir=runtime_dir,
                         scaler = scaler,
+                        runtime_dir=runtime_dir,
                         drive_dir=drive_dir,
                         step=global_step,
                         epoch = epoch_final,
