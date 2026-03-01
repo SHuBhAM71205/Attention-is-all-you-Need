@@ -175,4 +175,4 @@ Used for:
 
 Run:
 ```bash
-python inference.py --text "Hello world"
+python inference.py
