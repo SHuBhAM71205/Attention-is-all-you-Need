@@ -8,30 +8,61 @@ A complete PyTorch implementation of the Transformer architecture applied to the
 
 .</br>
 </br>├── Transformer/
+</br>│ ├── checkpoint.py
 </br>│ ├── components.py
 </br>│ ├── encoder.py
 </br>│ ├── decoder.py
 </br>│ └── transformer.py
 </br>│
 </br>├── Tokenizer/
+</br>│ ├── pretoken.py
 </br>│ └── tokenizer.py
 </br>│
+</br>├── Dataset/
+</br>│ └── parallelDataSet.py
+</br>│
+</br>├── DDP/
+</br>│ └── ddp.py
+</br>│
 </br>├── Data/
-</br>│ └── dev_test/
-</br>│ ├── dev.en
-</br>│ ├── dev.hi
-</br> ├── test.en
-</br>│ ├── test.hi
-</br>│ ├── dev.all
-</br>│ ├── test.all
-</br>│ ├── bpe.vocab
-</br>│ └── ...
+</br>│ ├── dev_test/
+</br>│ ├── parallel-n/
+</br>│ └── tokenized/
+</br>│
+</br>├── ByteOffsetGenerator/
+</br>│ ├── script.py
+</br>│ ├── en_offset.bo
+</br>│ └── hi_offset.bo
+</br>│
+</br>├── Logger/
+</br>│ └── logger.py
+</br>│
+</br>├── viz/
+</br>│ ├── viz.ipynb
+</br>│ └── training_metrics.csv
+</br>│
+</br>├── Dev/
+</br>│ ├── dev.ipynb
+</br>│ ├── MOE.ipynb
+</br>│ └── lr_scheduing.ipynb
+</br>│
+</br>├── Refrences/
+</br>│ └── Attentionpaper2017.pdf
+</br>│
+</br>├── logs/
+</br>│ └── train.log
+</br>│
+</br>├── saves/
+</br>│ └── (Model Checkpoints)
 </br>│
 </br>├── train.py
+</br>├── test.py
 </br>├── inference.py
-</br>├── dev.ipynb
 </br>├── loading_collab.ipynb
-</br>└── README.md
+</br>├── bpe.model
+</br>├── bpe.vocab
+</br>├── logs.txt
+</br>└── Readme.md
 
 ---
 
@@ -119,11 +150,14 @@ Files include:
 
 ### `train.py`
 Includes:
-- `ParallelTextDataset`  
-- `collate_fn` (handles dynamic padding & mask creation)  
 - Training loop with teacher forcing  
+- Handles distributed data parallel (DDP) logging, saving, and evaluation.
 
-### `dev.ipynb`
+### `Dataset/parallelDataSet.py`
+- `ParallelTextDataset`
+- `collate_fn` (handles dynamic padding & mask creation)
+
+### `Dev/dev.ipynb`
 Used for:
 - Experimentation (e.g., embedding_dims = 12, n_heads = 3, d_ff = 48)  
 - Debugging model  
