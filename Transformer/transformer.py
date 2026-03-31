@@ -145,8 +145,11 @@ class Transformer(nn.Module):
         B = enc_out.shape[0]
         
         generated = torch.full((B, 1), self.bos_id, dtype=torch.long).to(device)
-
+        
+        time_lst = []
+        
         for _ in range(max_new_tokens):
+            start_time = time.time()
             logits = self.decode(generated, enc_out, src_pad_mask)
 
             next_logits = logits[:, -1, :]
@@ -155,10 +158,16 @@ class Transformer(nn.Module):
             next_token = next_token.unsqueeze(1).to(device)  # (B,1)
             generated  = torch.cat([generated, next_token], dim=1)
 
+            end_time = time.time()
+            
+            time_lst.append(end_time - start_time)
+            
             if (next_token == self.eos_id).all():
                 break
-
-        return generated
+        
+        avg = sum(time_lst) / len(time_lst) if time_lst else 0
+        
+        return generated , avg / B
 
     def forward(self, src_ids: torch.Tensor, tgt_ids= None):
         """

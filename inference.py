@@ -1,77 +1,99 @@
+from __future__ import annotations
+
+from pathlib import Path
 
 import torch
-import torch.nn as nn
-import matplotlib.pyplot as plt
-import torch.nn.functional as F
 
 import Tokenizer.tokenizer as tk
-
-from Transformer.transformer import Transformer
 from Transformer.checkpoint import find_latest_checkpoint
-# device agnostic
+from Transformer.transformer import Transformer
+
+
+BASE_DIR = Path(__file__).resolve().parent
+CHECKPOINT_DIR = BASE_DIR / "saves"
+TOKENIZER_DATA_PATH = BASE_DIR / "Data" / "parallel-n" / "en-hi.all"
+
+EMBEDDING_DIMS = 512
+D_FF = 2048
+N_HEADS = 8
+N_LAYERS = 6
+MAX_TOKENS = 256
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
-test_en_path = "./Data/dev_test/test.en"
-test_hi_path = "./Data/dev_test/test.hi"
-
-embedding_dims = 512
-d_ff = 2048
-n_heads = 8
-n_layers = 6
-batch_size = 128
-epochs = 5
-label_smoothing = 0.1
-
-tokenizer = tk.Tokenizer(".", "./Data/parallel-n/en-hi.all")
+def build_tokenizer() -> tk.Tokenizer:
+    return tk.Tokenizer(str(BASE_DIR), str(TOKENIZER_DATA_PATH))
 
 
-with open(test_en_path,encoding='utf-8') as f:
-    test_en = f.readlines()
-
-with open(test_hi_path,encoding='utf-8') as f:
-    test_hi = f.readlines()
-    
-    
-tokenizer = tk.Tokenizer(".", "./Data/dev_test/test.all")
-
-X = []
-Y = []
-
-for sentences in zip(test_en,test_hi):
-    en_sentence = sentences[0]
-    hi_sentence = sentences[1]
-    X.append([4] + tokenizer.encode(en_sentence,encode_type='tokens') + [5]) # type: ignore
-    Y.append([4] + tokenizer.encode(hi_sentence,encode_type='tokens') + [5]) # type: ignore
-    # print(f"EN: {en_sentence} \nTOKENS: {en_token}\nHI: {hi_sentence} \nTOKENS: {hi_token}\n")
+def build_model(tokenizer: tk.Tokenizer, model_device: str = device) -> Transformer:
+    return Transformer(
+        tokenizer,
+        embedding_dims=EMBEDDING_DIMS,
+        d_ff=D_FF,
+        n_heads=N_HEADS,
+        num_layers_enc=N_LAYERS,
+        num_layers_dec=N_LAYERS,
+        max_tokens=MAX_TOKENS,
+        PATH=str(CHECKPOINT_DIR),
+        device=model_device,
+    ).to(model_device)
 
 
-en_hi = Transformer(
-    tokenizer,
-    embedding_dims=embedding_dims,
-    d_ff=d_ff,
-    n_heads=n_heads,
-    num_layers_enc=n_layers,
-    num_layers_dec=n_layers,
-    max_tokens=256,
-    PATH="./saves",
-    device=device
-).to(device)
+def load_model(model_device: str = device) -> tuple[Transformer, tk.Tokenizer, str]:
+    tokenizer = build_tokenizer()
+    model = build_model(tokenizer, model_device=model_device)
 
-chkpt = find_latest_checkpoint("./saves")
+    checkpoint_path = find_latest_checkpoint(str(CHECKPOINT_DIR))
+    if checkpoint_path is None:
+        raise FileNotFoundError(f"No checkpoint found in {CHECKPOINT_DIR}")
+
+    latest_ckpt = torch.load(checkpoint_path, map_location=model_device)
+    model.load_state_dict(latest_ckpt["model"])
+    model.eval()
+    return model, tokenizer, checkpoint_path
 
 
-latest_ckpt = torch.load(chkpt,map_location=device)
+def translate_text(
+    text: str,
+    model: Transformer | None = None,
+    tokenizer: tk.Tokenizer | None = None,
+    model_device: str = device,
+) -> tuple[str, float]:
+    statement = text.strip()
+    if not statement:
+        return "", 0.0
 
-en_hi.load_state_dict(latest_ckpt["model"])
-with torch.inference_mode():
-    stmt = str(input("Enter the english statment:\n"))
-    
-    tkns = torch.tensor(tokenizer.encode(stmt,encode_type="tokens")).unsqueeze(0).to(device)
-    
-    gen_tkns = en_hi(tkns)
-    
-    print(f"Hindi: \n {tokenizer.decode(gen_tkns.tolist())}")
-    
-    pass
+    if model is None or tokenizer is None:
+        model, tokenizer, _ = load_model(model_device=model_device)
+
+    with torch.inference_mode():
+        tokens = torch.tensor(
+            tokenizer.encode(statement, encode_type="tokens"),
+            dtype=torch.long,
+        ).unsqueeze(0).to(model_device)
+
+        generated_tokens, avg_time = model(tokens)
+        generated_tokens = generated_tokens[0].tolist()
+        generated_tokens = [
+            token
+            for token in generated_tokens
+            if token not in {tokenizer.sp.pad_id(), tokenizer.sp.bos_id(), tokenizer.sp.eos_id()}
+        ]
+        return tokenizer.decode(generated_tokens).strip() , avg_time
+
+
+def main() -> None:
+    model, tokenizer, checkpoint_path = load_model()
+    print(f"Loaded checkpoint: {checkpoint_path}")
+    statement = input("Enter the English statement:\n").strip()
+    if not statement:
+        print("No input provided.")
+        return
+
+    translation = translate_text(statement, model=model, tokenizer=tokenizer)
+    print(f"Hindi:\n{translation[0]} time taken: {translation[1]:.4f} seconds per sentence")
+
+
+if __name__ == "__main__":
+    main()

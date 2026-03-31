@@ -123,3 +123,348 @@
 [2026-01-05 13:14:13] INFO: 5.250889449748126
 [2026-01-05 13:20:58] INFO: 5.223633649786313
 [2026-01-05 13:27:49] INFO: 5.202524659725336
+
+
+
+[2025-12-25 16:49:50] INFO: Working on device cuda
+[2025-12-25 16:50:00] INFO: Loading from checkpoint: ./saves/Transformer_step_8000_2025-12-25_15-55-04.pt   
+[2025-12-25 16:50:04] INFO: Started Trainnig Loop with epoch: 5 and batch size: 128
+
+[2025-12-25 16:50:43] INFO: Epoch 0 ; loss 7.323441028594971
+[2025-12-25 16:55:10] INFO: Working on device cuda
+[2025-12-25 16:55:12] INFO: Loading from checkpoint: ./saves/Transformer_step_1_2025-12-25_16-25-42.pt   
+[2025-12-25 16:55:16] INFO: Started Trainnig Loop with epoch: 5 and batch size: 128
+
+[2025-12-25 16:59:19] INFO: Working on device cuda
+[2025-12-25 16:59:20] INFO: Loading from checkpoint: ./saves/Transformer_step_1_2025-12-25_16-25-42.pt   
+[2025-12-25 16:59:20] INFO: Started Trainnig Loop with epoch: 5 and batch size: 76
+b 
+[2025-12-26 05:15:43] INFO: 5.682228618720718
+[2025-12-28 05:53:00] INFO: Working on device cuda:0
+[2025-12-28 05:53:10] INFO: Loading from checkpoint: ./saves/Transformer_step_110000_2025-12-26_05-15-43.pt   
+[2025-12-28 05:54:57] INFO: Working on device cuda:0
+[2025-12-28 05:54:59] INFO: Starting fresh
+[2025-12-28 05:54:59] INFO: Started Trainnig Loop with epoch: 5 and batch size: 128
+
+--- With the DDP all stable til now but fixed bug of not storing epoch :))
+
+[2025-12-29 08:51:37] INFO: Working on device cuda:0
+[2025-12-29 08:51:48] INFO: Starting fresh
+[2025-12-29 08:51:48] INFO: Started Trainnig Loop with epoch: 5 and batch size: 50
+
+[2025-12-29 09:10:23] INFO: 10.171923607826233
+[2025-12-29 09:29:09] INFO: 10.09626596879959
+[2025-12-29 09:47:59] INFO: 9.891025079409282
+[2025-12-29 10:06:51] INFO: 9.648856708645821
+[2025-12-29 10:25:36] INFO: 9.437480485630035
+[2025-12-29 11:34:03] INFO: Working on device cuda:0
+[2025-12-29 11:34:15] INFO: Loading from checkpoint: ./saves/DistributedDataParallel_step_8000_2025-12-29_10-06-46.pt   
+[2025-12-29 11:34:31] INFO: Started Trainnig Loop with epoch: 5 and batch size: 50
+
+[2025-12-29 11:34:49] INFO: Working on device cuda:0
+[2025-12-29 11:34:51] INFO: Loading from checkpoint: ./saves/DistributedDataParallel_step_10000_2025-12-29_10-25-32.pt   
+[2025-12-29 11:35:06] INFO: Started Trainnig Loop with epoch: 5 and batch size: 50
+
+[2025-12-29 11:53:21] INFO: 8.401081160545349
+[2025-12-29 12:11:33] INFO: 8.332070747971535
+[2025-12-29 12:29:50] INFO: 8.256006892681121
+[2025-12-29 12:48:06] INFO: 8.19233811801672
+[2025-12-29 13:06:23] INFO: 8.137797983312607
+[2025-12-29 13:24:43] INFO: 8.091317103385926
+[2025-12-29 13:43:09] INFO: 8.052751518215452
+[2025-12-31 03:58:21] INFO: Working on device cuda:0
+[2025-12-31 03:58:39] INFO: Starting fresh
+[2025-12-31 03:58:39] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2025-12-31 04:01:48] INFO: Working on device cuda:0
+[2025-12-31 04:01:52] INFO: Starting fresh
+[2025-12-31 04:01:52] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2025-12-31 04:02:58] INFO: Working on device cuda:0
+[2025-12-31 04:03:01] INFO: Starting fresh
+[2025-12-31 04:03:01] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2025-12-31 04:34:55] INFO: Working on device cuda:0
+[2025-12-31 04:35:20] INFO: Starting fresh
+[2025-12-31 04:35:20] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2025-12-31 04:40:03] INFO: Working on device cuda:0
+[2025-12-31 04:40:05] INFO: Starting fresh
+[2025-12-31 04:40:05] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2025-12-31 04:46:58] INFO: Working on device cuda:0
+[2025-12-31 04:47:15] INFO: Working on device cuda:0
+[2025-12-31 04:48:26] INFO: Working on device cuda:0
+[2025-12-31 04:48:29] INFO: Loading from checkpoint: ./saves/Transformer_step_2000_2025-12-31_04-46-36.pt   
+[2025-12-31 04:48:30] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2025-12-31 04:55:14] INFO: 8.992577870130539
+[2025-12-31 05:01:52] INFO: 11.22772727906704[2025-12-31 05:49:30] INFO: Working on device cuda:0
+[2025-12-31 05:49:33] INFO: Starting fresh
+[2025-12-31 05:49:33] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2025-12-31 05:56:18] INFO: 8.60035565519333
+[2025-12-31 06:02:57] INFO: 8.855997328400612
+[2025-12-31 06:22:09] INFO: Working on device cuda:0
+[2025-12-31 06:22:12] INFO: Starting fresh
+[2025-12-31 06:22:12] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2025-12-31 06:28:13] INFO: 10.158997545719147
+[2025-12-31 06:34:12] INFO: 10.159108021736145
+[2025-12-31 06:40:16] INFO: 10.158234398523966
+[2025-12-31 06:46:24] INFO: 10.15801871228218
+[2025-12-31 06:52:35] INFO: 10.157887036895753
+[2025-12-31 06:58:43] INFO: 10.158142093817393
+[2025-12-31 11:32:03] INFO: Working on device cuda:0
+[2025-12-31 11:32:29] INFO: Starting fresh
+[2025-12-31 11:32:29] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2025-12-31 11:34:27] INFO: Working on device cuda:0
+[2025-12-31 11:34:29] INFO: Starting fresh
+[2025-12-31 11:34:29] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2025-12-31 11:41:04] INFO: 9.212880153417588
+[2025-12-31 11:47:38] INFO: 8.604034454107284
+[2025-12-31 11:54:15] INFO: 8.471233251412709
+[2025-12-31 12:00:54] INFO: 8.784830756425858
+[2025-12-31 12:07:35] INFO: 10.08468838777542
+[2025-12-31 12:14:07] INFO: 12.20004109787941
+[2026-01-01 12:45:21] INFO: Working on device cuda:0
+[2026-01-01 12:46:11] INFO: Working on device cuda:0
+[2026-01-01 12:46:20] INFO: Starting fresh
+[2026-01-01 12:46:20] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-01 12:53:01] INFO: 5.04898645067215
+[2026-01-01 12:59:31] INFO: Working on device cuda:0
+[2026-01-01 13:20:14] INFO: 2.3351212541858355
+[2026-01-01 13:27:14] INFO: 2.278378011316061
+[2026-01-01 13:45:19] INFO: Working on device cuda:0
+[2026-01-01 13:46:43] INFO: Working on device cuda:0
+[2026-01-01 13:46:57] INFO: Starting fresh
+[2026-01-01 13:46:57] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-01 13:53:37] INFO: 3.780079328417778
+[2026-01-02 09:08:04] INFO: Working on device cuda:0
+[2026-01-02 09:08:26] INFO: Starting fresh
+[2026-01-02 09:08:26] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-02 09:15:01] INFO: 7.334064010381699
+[2026-01-02 09:21:33] INFO: 6.929458513140679
+[2026-01-02 09:28:06] INFO: 6.723574834982554
+[2026-01-02 09:34:42] INFO: 6.589259156167508
+[2026-01-02 09:41:23] INFO: 6.4925625933170314
+[2026-01-02 09:47:53] INFO: 6.417975728034973
+[2026-01-02 09:54:33] INFO: 6.35759244462422
+[2026-01-02 10:01:13] INFO: 6.308362195014953
+[2026-01-02 10:07:50] INFO: 6.267064858648512
+[2026-01-02 10:14:33] INFO: 6.2319025709867475
+[2026-01-02 10:38:29] INFO: Working on device cuda:0
+[2026-01-02 10:38:46] INFO: Loading from checkpoint: ./saves/Transformer_step_20000_2026-01-02_10-14-21.pt   
+[2026-01-02 10:38:53] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-02 10:45:31] INFO: 5.8890564260482785
+[2026-01-02 10:52:10] INFO: 5.8785644567012785
+[2026-01-02 10:58:48] INFO: 5.867202204147975
+[2026-01-02 11:05:30] INFO: 5.857606186568737
+[2026-01-02 11:12:16] INFO: 5.847782250499725
+[2026-01-02 11:18:53] INFO: 5.838182249307632
+[2026-01-02 11:25:36] INFO: 5.828597014086587
+[2026-01-02 11:32:18] INFO: 5.820393251299858
+[2026-01-02 11:39:02] INFO: 5.812666751835081
+[2026-01-02 11:45:43] INFO: 5.805898553848267
+[2026-01-02 11:52:22] INFO: 5.800835042324933
+[2026-01-03 09:14:04] INFO: Working on device cuda:0
+[2026-01-03 09:14:25] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 09:14:35] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 09:18:51] INFO: Working on device cuda:0
+[2026-01-03 09:18:53] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 09:18:54] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 09:19:59] INFO: Working on device cuda:0
+[2026-01-03 09:20:02] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 09:20:03] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 09:28:47] INFO: Working on device cuda:0
+[2026-01-03 09:28:50] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 09:28:51] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 09:35:04] INFO: Working on device cuda:0
+[2026-01-03 09:35:07] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 09:35:08] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 09:37:42] INFO: Working on device cuda:0
+[2026-01-03 09:37:44] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 09:37:46] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 09:58:19] INFO: Working on device cuda:0
+[2026-01-03 09:58:40] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 09:58:53] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:02:04] INFO: Working on device cuda:0
+[2026-01-03 10:02:07] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:02:08] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:03:32] INFO: Working on device cuda:0
+[2026-01-03 10:03:34] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:03:36] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:04:29] INFO: Working on device cuda:0
+[2026-01-03 10:04:31] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:04:32] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:05:08] INFO: Working on device cuda:0
+[2026-01-03 10:05:10] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:05:11] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:06:54] INFO: Working on device cuda:0
+[2026-01-03 10:06:57] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:06:58] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:07:50] INFO: Working on device cuda:0
+[2026-01-03 10:07:54] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:07:55] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:14:02] INFO: Working on device cuda:0
+[2026-01-03 10:14:05] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:14:06] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:14:29] INFO: Working on device cuda:0
+[2026-01-03 10:14:32] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:14:33] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:20:02] INFO: Working on device cuda:0
+[2026-01-03 10:20:05] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:20:07] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:26:03] INFO: Working on device cuda:0
+[2026-01-03 10:26:05] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:26:06] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:33:35] INFO: Working on device cuda:0
+[2026-01-03 10:33:38] INFO: Loading from checkpoint: ./saves/Transformer_step_44000_2026-01-03_10-33-22.pt   
+[2026-01-03 10:34:16] INFO: Working on device cuda:0
+[2026-01-03 10:34:19] INFO: Loading from checkpoint: ./saves/Transformer_step_44000_2026-01-03_10-33-22.pt   
+[2026-01-03 10:35:19] INFO: Working on device cuda:0
+[2026-01-03 10:35:22] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:35:23] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:37:05] INFO: Working on device cuda:0
+[2026-01-03 10:37:08] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:37:09] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-03 10:40:18] INFO: Working on device cuda:0
+[2026-01-03 10:40:20] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-03 10:40:21] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 08:55:40] INFO: Working on device cuda:0
+[2026-01-04 08:56:01] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-04 08:56:11] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 09:03:32] INFO: 0.003101309182798531
+[2026-01-04 09:06:51] INFO: Working on device cuda:0
+[2026-01-04 09:06:54] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-04 09:06:55] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 09:14:16] INFO: 0.0030451725958678764
+[2026-01-04 09:21:34] INFO: 0.0013791714068952232
+[2026-01-04 09:38:53] INFO: Working on device cuda:0
+[2026-01-04 09:39:33] INFO: Working on device cuda:0
+[2026-01-04 09:39:36] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-04 09:39:53] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 09:47:07] INFO: 0.0009295074161502034
+[2026-01-04 09:50:28] INFO: Working on device cuda:0
+[2026-01-04 09:50:31] INFO: Loading from checkpoint: ./saves/Transformer_step_44000_2026-01-04_09-47-00.pt   
+[2026-01-04 09:50:32] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 09:50:57] INFO: Working on device cuda:0
+[2026-01-04 09:50:59] INFO: Loading from checkpoint: ./saves/Transformer_step_42000_2026-01-02_11-52-20.pt   
+[2026-01-04 09:51:01] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 09:58:33] INFO: 0.0030411775222349475
+[2026-01-04 10:00:38] INFO: Working on device cuda:0
+[2026-01-04 10:00:44] INFO: Starting fresh
+[2026-01-04 10:00:44] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 10:08:15] INFO: 0.003408079668391693
+[2026-01-04 10:10:24] INFO: Working on device cuda:0
+[2026-01-04 10:10:27] INFO: Starting fresh
+[2026-01-04 10:10:27] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 10:12:03] INFO: Working on device cuda:0
+[2026-01-04 10:12:06] INFO: Starting fresh
+[2026-01-04 10:12:06] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 10:14:27] INFO: Working on device cuda:0
+[2026-01-04 10:14:29] INFO: Starting fresh
+[2026-01-04 10:14:29] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 10:21:14] INFO: 0.0034229499383614382
+[2026-01-04 10:28:16] INFO: Working on device cuda:0
+[2026-01-04 10:28:31] INFO: Working on device cuda:0
+[2026-01-04 10:28:33] INFO: Starting fresh
+[2026-01-04 10:28:33] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 10:30:23] INFO: Working on device cuda:0
+[2026-01-04 10:30:25] INFO: Starting fresh
+[2026-01-04 10:30:25] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 10:35:14] INFO: Working on device cuda:0
+[2026-01-04 10:35:16] INFO: Starting fresh
+[2026-01-04 10:35:16] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 10:41:50] INFO: 0.0033982328547907128
+[2026-01-04 10:48:40] INFO: Working on device cuda:0
+[2026-01-04 10:48:43] INFO: Loading from checkpoint: ./saves/Transformer_step_2000_2026-01-04_10-41-44.pt   
+[2026-01-04 10:52:09] INFO: Working on device cuda:0
+[2026-01-04 10:52:11] INFO: Loading from checkpoint: ./saves/Transformer_step_2000_2026-01-04_10-41-44.pt   
+[2026-01-04 10:52:12] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 10:53:12] INFO: Working on device cuda:0
+[2026-01-04 10:53:14] INFO: Starting fresh
+[2026-01-04 10:53:14] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 10:59:49] INFO: 0.003398288238980325
+[2026-01-04 11:05:32] INFO: Working on device cuda:0
+[2026-01-04 11:05:35] INFO: Loading from checkpoint: ./saves/Transformer_step_2000_2026-01-04_10-59-42.pt   
+[2026-01-04 11:05:59] INFO: Working on device cuda:0
+[2026-01-04 11:06:03] INFO: Starting fresh
+[2026-01-04 11:06:03] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 11:08:12] INFO: Working on device cuda:0
+[2026-01-04 11:08:14] INFO: Starting fresh
+[2026-01-04 11:08:14] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 11:11:49] INFO: Working on device cuda:0
+[2026-01-04 11:12:40] INFO: Working on device cuda:0
+[2026-01-04 11:12:43] INFO: Starting fresh
+[2026-01-04 11:12:43] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 11:19:18] INFO: 0.0011988287043066131
+[2026-01-04 11:26:09] INFO: Working on device cuda:0
+[2026-01-04 11:26:12] INFO: Starting fresh
+[2026-01-04 11:26:12] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-04 11:32:23] INFO: 0.001348210252004866
+[2026-01-05 11:39:24] INFO: Working on device cuda:0
+[2026-01-05 11:39:48] INFO: Starting fresh
+[2026-01-05 11:39:48] INFO: Started Trainnig Loop with epoch: 5 and batch size: 32
+
+[2026-01-05 11:46:23] INFO: 7.156896070003509
+[2026-01-05 11:52:49] INFO: 6.682439418196678
+
+
+[2026-01-09 08:59:32] INFO: Working on device cuda:0
+[2026-01-09 08:59:58] INFO: Starting fresh
+[2026-01-09 08:59:58] INFO: Started Trainnig Loop with epoch: 5 and batch size: 100
+
+[2026-01-09 09:05:13] INFO: 6.1823122651577
+[2026-01-09 09:10:30] INFO: 5.463078394412994
+[2026-01-09 09:15:48] INFO: 4.993888678352038
+[2026-01-09 09:21:05] INFO: 4.646033487379551
+[2026-01-09 09:26:19] INFO: 4.378467663240433
+[2026-01-09 09:31:36] INFO: 4.1663746308485665
+[2026-01-09 09:36:54] INFO: 3.9931379077093943
+[2026-01-09 09:42:10] INFO: 3.848503060221672
+[2026-01-09 09:43:43] INFO: Epoch 0 ; loss 3.809442575223177

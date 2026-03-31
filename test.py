@@ -7,6 +7,8 @@ from Tokenizer import tokenizer
 from Transformer import transformer,checkpoint
 from Logger.logger import setup_logger
 
+from Score.BLEU import BLEU
+
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 embedding_dims = 512
@@ -34,6 +36,12 @@ drive_dir = "./saves"
 tknizer = tokenizer.Tokenizer(model_path=".",data_path="./Data/parallel-n/en-hi.all")
 
 dataset = TokenizedParallelDataset(en_bin,en_idx,hi_bin,hi_idx)
+
+
+def safe_decode(token_ids):
+    if not token_ids:
+        return ""
+    return tknizer.decode(token_ids)
 
 
 
@@ -70,13 +78,16 @@ if pnt is None:
 
 chkpt = torch.load(pnt,map_location=device)
 
+
+bleu_scoring = BLEU(4)
+
 en_hi.load_state_dict(chkpt["model"])
 
 en_hi.eval()
 with torch.inference_mode():
     loss_batch = 0
     iterations = 0
-
+    ppl_lst = []
     for en,hi in loader:
         en = en.to(device)
         hi = hi.to(device)
@@ -90,8 +101,35 @@ with torch.inference_mode():
             tgt_flat, 
             ignore_index=en_hi.pad_id
         )
-        
+        ppl = torch.exp(loss)
+        ppl_lst.append(ppl.item())
         loss_batch += loss.item()
         iterations +=1
         
-    print(f"The testing loss is {(loss_batch / iterations):.5f}")
+    print(f"The testing loss is {(loss_batch / iterations):.5f} ppl is {sum(ppl_lst)/len(ppl_lst):.5f}")
+    
+print("BLEU scoring>....")
+
+en_hi.eval()
+with torch.inference_mode():
+    bleu_lst = []
+    iterations = 0
+    for en,hi in loader:
+        en = en.to(device)
+        hi = hi.to(device)
+        generated_tokens,time= en_hi(en)
+        
+        generated_tokens = [
+            [token for token in str_lst if token not in {tknizer.sp.pad_id(), tknizer.sp.bos_id(), tknizer.sp.eos_id()}] for str_lst in generated_tokens.tolist()
+        ]
+        
+        hi_tokens = [
+            [token for token in str_lst if token not in {tknizer.sp.pad_id(), tknizer.sp.bos_id(), tknizer.sp.eos_id()}] for str_lst in hi.tolist()
+        ]
+        
+        gen_strs = [safe_decode(gen_tkns_i) for gen_tkns_i in generated_tokens]
+        hi_strs = [safe_decode(hi_tkns) for hi_tkns in hi_tokens]
+        
+        bleu_lst.append(bleu_scoring.get_score(gen_strs,hi_strs))
+    
+print(f"BLEU score: {sum(bleu_lst)/len(bleu_lst):.5f}")
