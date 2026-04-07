@@ -7,7 +7,7 @@ import torch
 import Tokenizer.tokenizer as tk
 from Transformer.checkpoint import find_latest_checkpoint
 from Transformer.transformer import Transformer
-
+from typing import List, Tuple
 
 BASE_DIR = Path(__file__).resolve().parent
 CHECKPOINT_DIR = BASE_DIR / "saves"
@@ -18,7 +18,8 @@ D_FF = 2048
 N_HEADS = 8
 N_LAYERS = 6
 MAX_TOKENS = 256
-
+beam_width = 3
+    
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
@@ -36,6 +37,7 @@ def build_model(tokenizer: tk.Tokenizer, model_device: str = device) -> Transfor
         num_layers_dec=N_LAYERS,
         max_tokens=MAX_TOKENS,
         PATH=str(CHECKPOINT_DIR),
+        beam_width=beam_width,
         device=model_device,
     ).to(model_device)
 
@@ -59,10 +61,10 @@ def translate_text(
     model: Transformer | None = None,
     tokenizer: tk.Tokenizer | None = None,
     model_device: str = device,
-) -> tuple[str, float]:
+) -> tuple[List[str], float]:
     statement = text.strip()
     if not statement:
-        return "", 0.0
+        return [""], 0.0
 
     if model is None or tokenizer is None:
         model, tokenizer, _ = load_model(model_device=model_device)
@@ -74,13 +76,17 @@ def translate_text(
         ).unsqueeze(0).to(model_device)
 
         generated_tokens, avg_time = model(tokens)
-        generated_tokens = generated_tokens[0].tolist()
-        generated_tokens = [
-            token
-            for token in generated_tokens
+        print(f"Generated tokens: {generated_tokens.shape}")
+        generated_tokens =generated_tokens.tolist()
+        
+        generated_tokens =[
+            
+            [token
+            for token in lst
             if token not in {tokenizer.sp.pad_id(), tokenizer.sp.bos_id(), tokenizer.sp.eos_id()}
+            ]for lst in generated_tokens
         ]
-        return tokenizer.decode(generated_tokens).strip() , avg_time
+        return [tokenizer.decode(generated_tokens[i]).strip() for i in range(beam_width)], avg_time
 
 
 def main() -> None:

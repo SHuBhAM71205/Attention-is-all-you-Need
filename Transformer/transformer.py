@@ -23,6 +23,7 @@ class Transformer(nn.Module):
         num_layers_dec  =2,
         max_tokens      =512,
         PATH            = ".",
+        beam_width      = 4,
         load_from_saves =True,
         drive_path = "",
         
@@ -44,7 +45,7 @@ class Transformer(nn.Module):
         self.num_layers_enc = num_layers_enc
         self.num_layers_dec = num_layers_dec
         self.max_tokens = max_tokens
-
+        self.beam_width = beam_width
         self.vocab_size = tokenizer.sp.GetPieceSize()
         self.pad_id = tokenizer.sp.pad_id()
         self.unk_id = tokenizer.sp.unk_id()
@@ -133,7 +134,7 @@ class Transformer(nn.Module):
     
     def infer(self, enc_out: torch.Tensor, src_pad_mask: torch.Tensor, max_new_tokens: int = 50):
         """
-        Greedy decoding.
+         decoding.
 
         enc_out:      (B, S, embedding_dims)
         src_pad_mask: (B, S)
@@ -144,7 +145,17 @@ class Transformer(nn.Module):
         src_pad_mask=src_pad_mask.to(device)
         B = enc_out.shape[0]
         
-        generated = torch.full((B, 1), self.bos_id, dtype=torch.long).to(device)
+        enc_out = enc_out.repeat_interleave(self.beam_width, dim=0)
+        src_pad_mask = src_pad_mask.repeat_interleave(self.beam_width, dim=0)
+        
+        generated = torch.full((B * self.beam_width, 1), self.bos_id,dtype=torch.long,device=device)
+
+        log_probablity = torch.full((B, self.beam_width),float('-inf'),device=device)
+        
+        
+        log_probablity[:, 0] = 0.0
+        
+        finished = torch.zeros((B, self.beam_width), dtype=torch.bool, device=device)
         
         time_lst = []
         
@@ -152,22 +163,48 @@ class Transformer(nn.Module):
             start_time = time.time()
             logits = self.decode(generated, enc_out, src_pad_mask)
 
-            next_logits = logits[:, -1, :]
-            next_token  = torch.argmax(next_logits, dim=-1)
+            log_prob = torch.log_softmax(logits[:, -1, :], dim=-1)
+            log_prob = log_prob.view(B, self.beam_width, self.vocab_size)
 
-            next_token = next_token.unsqueeze(1).to(device)  # (B,1)
-            generated  = torch.cat([generated, next_token], dim=1)
+            log_prob[finished] = float('-inf')
+            log_prob[finished, self.eos_id] = 0.0
 
-            end_time = time.time()
+            new_score = log_prob + log_probablity.unsqueeze(2)  # (B, beam, vocab)
+            new_score = new_score.view(B, -1)
+
+            next_k_score, next_k_idx = torch.topk(
+                new_score,
+                k=self.beam_width,
+                dim=-1
+            )
+
+            next_token = next_k_idx % self.vocab_size
+            beam_idx = next_k_idx // self.vocab_size
+
+            base = torch.arange(B, device=device).unsqueeze(1) * self.beam_width
+            index = base + beam_idx
+
+            generated = generated[index.view(-1)]
+            next_token = next_token.view(B * self.beam_width, 1)
+            generated = torch.cat([generated, next_token], dim=1)
+
+            log_probablity = next_k_score
+
+            eos_mask = (next_token.view(B, self.beam_width) == self.eos_id)
+            finished = finished.gather(1, beam_idx) | eos_mask
+
+            time_lst.append(time.time() - start_time)
             
-            time_lst.append(end_time - start_time)
-            
-            if (next_token == self.eos_id).all():
+            if finished.all():
                 break
+
+        best_idx = log_probablity.argmax(dim=1)
+        final_index = torch.arange(B, device=device) * self.beam_width + best_idx
+        final_sequences = generated[final_index]
         
         avg = sum(time_lst) / len(time_lst) if time_lst else 0
         
-        return generated , avg / B
+        return generated , avg
 
     def forward(self, src_ids: torch.Tensor, tgt_ids= None):
         """

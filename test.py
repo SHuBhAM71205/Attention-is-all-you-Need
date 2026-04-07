@@ -53,6 +53,7 @@ en_hi = transformer.Transformer(
     num_layers_enc=n_layers,
     num_layers_dec=n_layers,
     max_tokens=256,
+    beam_width=1,
     PATH="./saves"
 ).to(device)
 
