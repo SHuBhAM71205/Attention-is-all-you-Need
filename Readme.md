@@ -3,6 +3,7 @@
 A complete PyTorch implementation of the Transformer architecture applied to the IITB English–Hindi machine translation task. The project includes sentencepiece-based BPE tokenization, dataset preparation, model training, and inference.
 
 ---
+![Uploading image.png…]()
 
 ## 📁 Project Structure
 
