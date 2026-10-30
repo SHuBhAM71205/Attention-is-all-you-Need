@@ -1,9 +1,9 @@
-# 🌐 Attention Is All You Need — English ↔ Hindi Machine Translation
+<img width="942" height="365" alt="image" src="https://github.com/user-attachments/assets/6d97149d-96f2-42b3-b5ca-63049e01944b" /># 🌐 Attention Is All You Need — English ↔ Hindi Machine Translation
 
 A complete PyTorch implementation of the Transformer architecture applied to the IITB English–Hindi machine translation task. The project includes sentencepiece-based BPE tokenization, dataset preparation, model training, and inference.
 
 ---
-![Uploading image.png…]()
+![Uploading image.png…](./image.png)
 
 ## 📁 Project Structure
 
